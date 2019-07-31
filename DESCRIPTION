@@ -1,0 +1,18 @@
+Package: bigutilsr
+Title: Utility Functions for Large-scale Data 
+Version: 0.0.0.9000
+Date: 2019-07-31
+Authors@R: 
+  person("Florian", "Privé", 
+         email = "florian.prive.21@gmail.com", 
+         role = c("aut", "cre"))
+Description: Utility functions for large-scale data.
+License: GPL-3
+Encoding: UTF-8
+Language: en-US
+LazyData: TRUE
+ByteCompile: TRUE
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.0
+URL: https://github.com/privefl/bigutilsr
+BugReports: https://github.com/privefl/bigutilsr/issues

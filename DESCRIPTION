@@ -19,6 +19,8 @@ BugReports: https://github.com/privefl/bigutilsr/issues
 LinkingTo: 
     Rcpp
 Imports: 
+    doParallel,
+    parallel,
     Rcpp
 Suggests: 
     testthat

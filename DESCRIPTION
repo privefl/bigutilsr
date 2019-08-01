@@ -23,6 +23,7 @@ Imports:
     foreach,
     parallel,
     Rcpp
-Suggests: 
-    testthat,
-    covr
+Suggests:
+    covr,
+    spelling, 
+    testthat

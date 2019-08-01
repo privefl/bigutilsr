@@ -13,7 +13,7 @@ U1 <- X[-ind, ] %*% svd$v
 U2 <- pca_adjust(svd$d^2, M, N, test.scores = U1, n.spikes.max = 50)
 (shrinkage <- attr(U2, "shrinkage"))
 
-# expect_equal(pca_nspike(svd$d^2, M, N, n.spikes.max = 20)$n.spikes, 3)
+# expect_gte(pca_nspike(svd$d^2, M, N, n.spikes.max = 20)$n.spikes, 3)
 expect_gte(length(shrinkage), 3)
 
 # col <- 2:3
@@ -27,3 +27,6 @@ pred2 <- by(U2[, 1:4], pop[-ind], colMeans)
 lapply(seq_along(ref), function(k) {
   expect_lt(crossprod(ref[[k]] - pred2[[k]]), crossprod(ref[[k]] - pred1[[k]]))
 })
+
+U3 <- pca_adjust(svd$d^2, M, N, test.scores = U1[, 1:3], n.spikes.max = 20)
+expect_length(attr(U3, "shrinkage"), 3)

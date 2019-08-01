@@ -495,7 +495,7 @@ pca_adjust <- function(train.eval, p, n, test.scores,
   m <- min(length(shrinkage), ncol(test.scores))
   for (k in seq_len(m)) test.scores[, k] <- test.scores[, k] / shrinkage[k]
 
-  structure(test.scores, shrinkage = shrinkage)
+  structure(test.scores, shrinkage = shrinkage[1:m])
 }
 
 ################################################################################

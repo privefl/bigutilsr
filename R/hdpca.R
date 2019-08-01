@@ -180,7 +180,7 @@ quant<-function(q,t,cuml)
 globalVariables("bw")
 
 # Smoothing the LSD
-popsmooth <- function(pop, t1, z, v, gamma, eimax) {
+popsmooth2 <- function(pop, t1, z, v, gamma, eimax, ncores) {
 
   # Loss function
   lossf <- function(pop, eimax, z, v, gamma) {
@@ -193,7 +193,7 @@ popsmooth <- function(pop, t1, z, v, gamma, eimax) {
 
   seq_bw <- seq_log(length(pop) / 2, sqrt(length(pop)), 30)
 
-  registerDoParallel(cl <- makeCluster(getOption("hdpca.ncores")))
+  registerDoParallel(cl <- makeCluster(ncores))
   on.exit(stopCluster(cl), add = TRUE)
   pop_loss <- foreach(bw = seq_bw, .combine = 'rbind') %dopar% {
     pop <- stats::ksmooth(seq_along(pop), pop, bandwidth = bw)$y
@@ -206,7 +206,7 @@ popsmooth <- function(pop, t1, z, v, gamma, eimax) {
 
 ################################################################################
 
-karoui.nonsp <- function(samp.eval, m, p, n) {
+karoui.nonsp <- function(samp.eval, m, p, n, ncores) {
 
   if (!requireNamespace("boot",    quietly = TRUE) ||
       !requireNamespace("lpSolve", quietly = TRUE))
@@ -344,21 +344,26 @@ karoui.nonsp <- function(samp.eval, m, p, n) {
   })
 
   # Smoothing the non-spikes
-  pop <- popsmooth(est * eimax, t1, z, v, gamma, eimax)
+  pop <- popsmooth2(est * eimax, t1, z, v, gamma, eimax, ncores = ncores)
 
   c(rep(pop[1], m), pop)
 }
 
 ################################################################################
 
-select.nspike <- function(samp.eval, p, n, n.spikes.max) {
+#' @inherit hdpca::select.nspike title description params return
+#' @param ncores Number of cores to be used. You can e.g. use [nb_cores()].
+#'
+#' @export
+#'
+pca_nspike <- function(samp.eval, p, n, n.spikes.max, ncores = 1) {
 
   if (length(samp.eval) == (n - 1)) samp.eval <- c(samp.eval, 0)
   if (length(samp.eval) != n) stop("'samp.eval' must have length n or (n-1).")
 
   m <- n.spikes.max
   repeat {
-    pop.nonsp <- karoui.nonsp(samp.eval, m, p, n)
+    pop.nonsp <- karoui.nonsp(samp.eval, m, p, n, ncores = ncores)
     eval.l <- l.eval(samp.eval, pop.nonsp, m, p, n)
     if (min(eval.l) > 0) {
       break
@@ -376,7 +381,7 @@ select.nspike <- function(samp.eval, p, n, n.spikes.max) {
 ################################################################################
 
 hdpc_est<-function(samp.eval,p,n,method=c("d.gsp","l.gsp","osp"),
-                   n.spikes,n.spikes.max,n.spikes.out,nonspikes.out=FALSE)
+                   n.spikes,n.spikes.max,n.spikes.out,nonspikes.out=FALSE, ncores)
 {
   method<-match.arg(method)
 
@@ -394,7 +399,7 @@ hdpc_est<-function(samp.eval,p,n,method=c("d.gsp","l.gsp","osp"),
     {
       stop("Both n.spikes and n.spikes.max cannot be missing")
     } else {
-      spike.select<-select.nspike(samp.eval,p,n,n.spikes.max)
+      spike.select<-pca_nspike(samp.eval,p,n,n.spikes.max, ncores = ncores)
       n.spikes<-spike.select$n.spikes
       eval.l<-spike.select$spikes
       pop.nonsp<-spike.select$nonspikes
@@ -411,7 +416,7 @@ hdpc_est<-function(samp.eval,p,n,method=c("d.gsp","l.gsp","osp"),
     if(n.spikes.out>n.spikes)	stop("n.spikes.out must be smaller than n.spikes")
     if(flag.sp.lambda==0)
     {
-      pop.nonsp<-karoui.nonsp(samp.eval,n.spikes,p,n)
+      pop.nonsp<-karoui.nonsp(samp.eval,n.spikes,p,n, ncores = ncores)
       eval.l<-l.eval(samp.eval,pop.nonsp,n.spikes,p,n)
       if(min(eval.l)<0)	stop("n.spikes is too large, the spectrum does not have that many distant spikes")
       angle.l<-l.angle(eval.l,samp.eval,pop.nonsp,n.spikes,p,n)
@@ -464,16 +469,28 @@ hdpc_est<-function(samp.eval,p,n,method=c("d.gsp","l.gsp","osp"),
 
 ################################################################################
 
-pc_adjust2 <- function(train.eval, p, n, test.scores,
+#' @inherit hdpca::pc_adjust title description params
+#' @param ncores Number of cores to be used. You can e.g. use [nb_cores()].
+#'
+#' @return
+#' A matrix containing the bias-adjusted PC scores.
+#' The dimension of the matrix is the same as the dimension of `test.scores`.
+#'
+#' Also, an attribute `attr(*, "shrinkage")` containing the shrinkage factors.
+#' Note that the number of shrinkage factors can be smaller than the number of
+#' columns of `test.scores`; it corresponds to the estimated number of spikes.
+#'
+#' @export
+#'
+pca_adjust <- function(train.eval, p, n, test.scores,
                        method = c("d.gsp", "l.gsp", "osp"),
-                       n.spikes, n.spikes.max,
+                       n.spikes.max,
                        ncores = 1) {
 
-  options("hdpca.ncores" = ncores); rm(ncores)
+  stopifnot(length(dim(test.scores)) == 2)
 
-  test.scores <- as.matrix(test.scores)
-
-  shrinkage <- do.call(hdpc_est, as.list(environment()))$shrinkage
+  shrinkage <- hdpc_est(train.eval, p, n, method, n.spikes.max = n.spikes.max,
+                        ncores = ncores)$shrinkage
 
   m <- min(length(shrinkage), ncol(test.scores))
   for (k in seq_len(m)) test.scores[, k] <- test.scores[, k] / shrinkage[k]

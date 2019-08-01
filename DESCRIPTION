@@ -24,4 +24,5 @@ Imports:
     parallel,
     Rcpp
 Suggests: 
-    testthat
+    testthat,
+    covr

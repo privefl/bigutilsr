@@ -5,3 +5,9 @@
 # bigutilsr
 
 R package with utility functions for large-scale data.
+
+## Installation
+
+```r
+remotes::install_github("privefl/bigutilsr")
+```

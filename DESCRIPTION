@@ -1,7 +1,7 @@
 Package: bigutilsr
 Title: Utility Functions for Large-scale Data 
 Version: 0.0.0.9000
-Date: 2019-07-31
+Date: 2019-08-01
 Authors@R: 
   person("Florian", "Privé", 
          email = "florian.prive.21@gmail.com", 
@@ -22,8 +22,12 @@ Imports:
     doParallel,
     foreach,
     parallel,
-    Rcpp
+    Rcpp,
+    stats
 Suggests:
+    boot,
     covr,
+    hdpca,
+    lpSolve,
     spelling, 
     testthat

@@ -208,10 +208,6 @@ popsmooth2 <- function(pop, t1, z, v, gamma, eimax, ncores) {
 
 karoui.nonsp <- function(samp.eval, m, p, n, ncores) {
 
-  if (!requireNamespace("boot",    quietly = TRUE) ||
-      !requireNamespace("lpSolve", quietly = TRUE))
-    stop("Please install packages 'boot' and 'lpSolve'.")
-
   gamma <- p / n
   eimax <- samp.eval[m + 1]              # Largest sample eigenvalue
   eimin <- `if`(n > p, samp.eval[n], 0)  # Smallest sample eigenvalue
@@ -351,7 +347,7 @@ karoui.nonsp <- function(samp.eval, m, p, n, ncores) {
 
 ################################################################################
 
-#' @inherit hdpca::select.nspike title description params return
+#' @inherit hdpca::select.nspike title description params return references
 #' @param ncores Number of cores to be used. You can e.g. use [nb_cores()].
 #'
 #' @export
@@ -469,7 +465,7 @@ hdpc_est<-function(samp.eval,p,n,method=c("d.gsp","l.gsp","osp"),
 
 ################################################################################
 
-#' @inherit hdpca::pc_adjust title description params
+#' @inherit hdpca::pc_adjust title description params references
 #' @param ncores Number of cores to be used. You can e.g. use [nb_cores()].
 #'
 #' @return

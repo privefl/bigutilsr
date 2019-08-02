@@ -45,3 +45,8 @@ columns of \code{test.scores}; it corresponds to the estimated number of spikes.
 \description{
 Adjusts the shrinkage bias in the predicted PC scores based on the estimated shrinkage factors.
 }
+\references{
+Dey, R. and Lee, S. (2016).
+\emph{Asymptotic properties of Principal Component Analysis and shrinkage-bias adjustment under the Generalized Spiked Population model.}
+arXiv:1607.08647
+}

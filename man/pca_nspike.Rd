@@ -33,3 +33,8 @@ Upper bound of the number of distant spikes in the population.
 \description{
 Estimates the number of distant spikes in the population based on the Generalized Spiked Population model. A finite upper bound (\code{n.spikes.max}) of the number of distant spikes must be provided.
 }
+\references{
+Dey, R. and Lee, S. (2016).
+\emph{Asymptotic properties of Principal Component Analysis and shrinkage-bias adjustment under the Generalized Spiked Population model.}
+arXiv:1607.08647
+}

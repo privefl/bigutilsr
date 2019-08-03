@@ -2,39 +2,21 @@
 % Please edit documentation in R/hdpca.R
 \name{pca_nspike}
 \alias{pca_nspike}
-\title{Finding Distant Spikes}
+\title{Number of spikes in PCA}
 \usage{
-pca_nspike(samp.eval, p, n, n.spikes.max, ncores = 1)
+pca_nspike(eigval, nb_in_bin = 10)
 }
 \arguments{
-\item{samp.eval}{
-Numeric vector containing the sample eigenvalues. The vector must have dimension \code{n} or \code{n-1}, it may be unordered.
-}
+\item{eigval}{Eigenvalues (squared singular values).}
 
-\item{p}{
-The number of features.
-}
-
-\item{n}{
-The number of samples.
-}
-
-\item{n.spikes.max}{
-Upper bound of the number of distant spikes in the population.
-}
-
-\item{ncores}{Number of cores to be used. You can e.g. use \code{\link[=nb_cores]{nb_cores()}}.}
+\item{nb_in_bin}{Mean number of values in each bin of the histogram.}
 }
 \value{
-\item{n.spikes}{Estimated number of distant spikes.}
-\item{spikes}{If \code{evals.out=TRUE}, estimated distant spikes are returned.}
-\item{nonspikes}{If \code{evals.out=TRUE}, estimated non-spikes are returned.}
+The estimated number of distant spikes.
 }
 \description{
-Estimates the number of distant spikes in the population based on the Generalized Spiked Population model. A finite upper bound (\code{n.spikes.max}) of the number of distant spikes must be provided.
+Estimate the number of distant spikes based on the histogram of eigenvalues.
 }
-\references{
-Dey, R. and Lee, S. (2016).
-\emph{Asymptotic properties of Principal Component Analysis and shrinkage-bias adjustment under the Generalized Spiked Population model.}
-arXiv:1607.08647
+\seealso{
+\code{\link[hdpca:select.nspike]{hdpca::select.nspike()}}
 }

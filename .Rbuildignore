@@ -1,3 +1,4 @@
+^tmp-save$
 ^tests/testthat/Rplots\.pdf$
 ^codecov\.yml$
 ^appveyor\.yml$

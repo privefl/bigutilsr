@@ -4,10 +4,15 @@
 \alias{pca_adjust}
 \title{Adjusting shrinkage in PC scores}
 \usage{
-pca_adjust(train.eval, p, n, test.scores, method = c("d.gsp", "l.gsp",
-  "osp"), n.spikes.max, ncores = 1)
+pca_adjust(test.scores, train.eval, p, n = length(train.eval),
+  method = c("d.gsp", "l.gsp", "osp"),
+  n.spikes = pca_nspike(train.eval))
 }
 \arguments{
+\item{test.scores}{
+An \eqn{m\times k} matrix or data frame containing the first \eqn{k} predicted PC scores of \eqn{m} many test samples.
+}
+
 \item{train.eval}{
 Numeric vector containing the sample eigenvalues. The vector must have dimension \code{n} or \code{n-1}, it may be unordered.
 }
@@ -20,19 +25,13 @@ The number of features.
 The number of training samples.
 }
 
-\item{test.scores}{
-An \eqn{m\times k} matrix or data frame containing the first \eqn{k} predicted PC scores of \eqn{m} many test samples.
-}
-
 \item{method}{
 String specifying the estimation method. Possible values are "\code{d.gsp}" (default),"\code{l.gsp}" and "\code{osp}".
 }
 
-\item{n.spikes.max}{
-Upper bound of the number of distant spikes in the population. Optional, but needed if \code{n.spikes} is not specified. Ignored if \code{n.spikes} is specified.
+\item{n.spikes}{
+Number of distant spikes in the population (Optional).
 }
-
-\item{ncores}{Number of cores to be used. You can e.g. use \code{\link[=nb_cores]{nb_cores()}}.}
 }
 \value{
 A matrix containing the bias-adjusted PC scores.
@@ -45,8 +44,24 @@ columns of \code{test.scores}; it corresponds to the estimated number of spikes.
 \description{
 Adjusts the shrinkage bias in the predicted PC scores based on the estimated shrinkage factors.
 }
+\details{
+The different choices for \code{method} are:
+\itemize{
+\item "\code{d.gsp}": \eqn{d}-estimation method based on the Generalized Spiked Population (GSP) model.
+\item "\code{l.gsp}": \eqn{\lambda}-estimation method based on the GSP model.
+\item "\code{osp}": Estimation method based on the Ordinary Spiked Population (OSP) model.
+}
+The \eqn{(i,j)^{th}} element of \code{test.scores} should denote the \eqn{j^{th}} predicted PC score for the \eqn{i^{th}} subject in the test sample.
+
+At least one of \code{n.spikes} and \code{n.spikes.max} must be provided. If \code{n.spikes} is provided then \code{n.spikes.max} is ignored, else \code{n.spikes.max} is used to find out the number of distant spikes using \code{\link{select.nspike}}.
+
+The argument \code{nonspikes.out} is ignored if \code{method="d.gsp"} or "\code{osp}".
+}
 \references{
 Dey, R. and Lee, S. (2016).
 \emph{Asymptotic properties of Principal Component Analysis and shrinkage-bias adjustment under the Generalized Spiked Population model.}
 arXiv:1607.08647
+}
+\seealso{
+\code{\link[hdpca:pc_adjust]{hdpca::pc_adjust()}}
 }

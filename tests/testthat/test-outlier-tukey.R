@@ -1,0 +1,20 @@
+context("test-outlier-tukey")
+
+test_that("tukey_mc_up() works", {
+  x <- c(rnorm(3, mean = 8), rnorm(1e4, mean = 0))
+  # hist(x)
+  (q <- tukey_mc_up(x))
+  (q.2 <- tukey_mc_up(x, coef = 1.5))
+  expect_gt(q, q.2 + 1)
+  # abline(v = q, col = "red"); abline(v = q.2, col = "blue")
+  ind <- which(x > q)
+  expect_lte(length(ind), 5)
+  expect_equal(ind[1:3], 1:3)
+  expect_gt(sum(x > q.2), 10)
+
+  x2 <- c(rnorm(3, mean = 8), rnorm(1e5, mean = 0))
+  (q2 <- tukey_mc_up(x2))
+  expect_gt(q2, q)
+  (q2.2 <- tukey_mc_up(x2, coef = 1.5))
+  expect_equal(q2.2, q.2, tolerance = 1e-1)
+})

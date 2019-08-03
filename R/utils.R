@@ -1,5 +1,11 @@
 ################################################################################
 
+#' @importFrom robust covRob
+#' @export
+robust::covRob
+
+################################################################################
+
 #' Recommended number of cores to use
 #'
 #' This is base on the following rule: use only physical cores and if you have

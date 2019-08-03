@@ -19,15 +19,18 @@ BugReports: https://github.com/privefl/bigutilsr/issues
 LinkingTo: 
     Rcpp
 Imports: 
+    boot,
     doParallel,
     foreach,
+    lpSolve,
+    nabor,
     parallel,
     Rcpp,
+    robustbase,
+    robust,
     stats
 Suggests:
-    boot,
     covr,
     hdpca,
-    lpSolve,
     spelling, 
     testthat

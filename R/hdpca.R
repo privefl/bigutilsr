@@ -310,8 +310,7 @@ karoui.nonsp <- function(samp.eval, m, p, n, ncores) {
   }
   if (flag.err == 0) stop(ERROR_MSG)
 
-  oldw <- options(warn = -1)
-  t <- seq(eimin / eimax, 1, 5 * 10^-3)
+  t <- seq(eimin / eimax, 1, 5e-3)
   t1 <- sort(c(t, ai))
   if (flag.err == 1) {
     w1 <- simp$solution[seq_along(t)]
@@ -323,16 +322,16 @@ karoui.nonsp <- function(samp.eval, m, p, n, ncores) {
   # Distribution function (Sample)
   cuml <- sapply(t1, function(t1_j) {
     a <- sum(w1[which(t <= t1_j)])
-    b <- sum(w2[which(bi <= t1_j)])
-    if (max(which(bi <= t1_j)) == length(bi) || max(which(bi <= t1_j)) == -Inf) {
+    ind <- which(bi <= t1_j)
+    b <- sum(w2[ind])
+    if ( (length(ind) == 0) || (max(ind) == length(bi)) ) {
       d <- 0
     } else {
-      c <- max(which(bi <= t1_j)) + 1
+      c <- max(ind) + 1
       d <- w2[c] * (t1_j - ai[c]) / (bi[c] - ai[c])
     }
     a + b + d
   })
-  options(oldw)
 
   # Obtain Quantiles
   est <- sapply((p - m):1, function(i) {

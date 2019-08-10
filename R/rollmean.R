@@ -17,8 +17,8 @@ rollmean <- function(x, size) {
   if (len >= length(x)) stop("Parameter 'size' is too large.")
   if (size < 0) stop("Parameter 'size' must be positive.")
 
-  lims <- stats::qnorm(range(stats::ppoints(len)))
-  weights <- stats::dnorm(seq(lims[1], lims[2], length.out = len))
+  lims <- qnorm(range(ppoints(len)))
+  weights <- dnorm(seq(lims[1], lims[2], length.out = len))
 
   roll_mean(x, weights)
 }

@@ -27,7 +27,7 @@ tukey_mc_up <- function(x, coef = NULL, alpha = 0.05, a = -4, b = 3) {
   if (is.null(coef)) {
     m <- sum(!is.na(x))
     alpha_m <- 1 - (1 - alpha)^(1/m)
-    coef <- (stats::qnorm(alpha_m, lower.tail = FALSE) - 0.6744898) / 1.34898
+    coef <- (qnorm(alpha_m, lower.tail = FALSE) - 0.6744898) / 1.34898
   }
 
   robustbase::adjboxStats(x, coef = coef, a = a, b = b,

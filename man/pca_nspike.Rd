@@ -4,12 +4,12 @@
 \alias{pca_nspike}
 \title{Number of spikes in PCA}
 \usage{
-pca_nspike(eigval, nb_in_bin = 10)
+pca_nspike(eigval, nboot = 1000)
 }
 \arguments{
 \item{eigval}{Eigenvalues (squared singular values).}
 
-\item{nb_in_bin}{Mean number of values in each bin of the histogram.}
+\item{nboot}{Number of bootstrap replicates. Default is \code{1000}.}
 }
 \value{
 The estimated number of distant spikes.

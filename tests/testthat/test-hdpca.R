@@ -8,6 +8,7 @@ N <- 300; M <- ncol(X)
 ind <- sample(nrow(X), N)
 svd <- svd(X[ind, ])
 # plot(svd$d^2, log = "xy")
+# hist(svd$d[svd$d < 80]^2, breaks = nclass.scottRob)
 
 expect_equal(U0 <- sweep(svd$u, 2, svd$d, '*'), X[ind, ] %*% svd$v)
 U1 <- X[-ind, ] %*% svd$v
@@ -15,7 +16,7 @@ U2 <- pca_adjust(U1, svd$d^2, M, N)
 (shrinkage <- attr(U2, "shrinkage"))
 
 # expect_gte(pca_nspike(svd$d^2, M, N, n.spikes.max = 20)$n.spikes, 3)
-expect_gte(length(shrinkage), 3)
+expect_equal(length(shrinkage), 3)
 
 # col <- 2:3
 # plot(U0[, col])

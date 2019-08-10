@@ -5,7 +5,7 @@
 #' Estimate the number of distant spikes based on the histogram of eigenvalues.
 #'
 #' @param eigval Eigenvalues (squared singular values).
-#' @param nb_in_bin Mean number of values in each bin of the histogram.
+#' @param nboot Number of bootstrap replicates. Default is `1000`.
 #'
 #' @return The estimated number of distant spikes.
 #'
@@ -13,26 +13,9 @@
 #'
 #' @export
 #'
-pca_nspike <- function(eigval, nb_in_bin = 10) {
-
-  S <- utils::head(sort(eigval, decreasing = TRUE), -1)
-
-  q <- Inf
-  repeat {
-    # histogram without outliers
-    ind_no_out <- which(S < q)
-    nbreak <- round(length(ind_no_out) / nb_in_bin)
-    h <- graphics::hist(S[ind_no_out], breaks = nbreak, plot = FALSE)
-    # find empty regions on the right
-    L <- length(h$mids)
-    wh0 <- which(h$counts == 0)
-    ind_mid <- wh0[wh0 > L/3][1]
-    if (is.na(ind_mid)) break
-    # define new threshold to refine histogram
-    q <- h$mids[ind_mid]
-  }
-
-  sum(S > q)
+pca_nspike <- function(eigval, nboot = 1000) {
+  lim_up <- hist_out(eigval, nboot = nboot)$lim[2]
+  sum(eigval > lim_up)
 }
 
 ################################################################################

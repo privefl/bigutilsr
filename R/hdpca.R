@@ -5,7 +5,7 @@
 #' Estimate the number of distant spikes based on the histogram of eigenvalues.
 #'
 #' @param eigval Eigenvalues (squared singular values).
-#' @param nboot Number of bootstrap replicates. Default is `1000`.
+#' @inheritParams hist_out
 #'
 #' @return The estimated number of distant spikes.
 #'
@@ -13,8 +13,8 @@
 #'
 #' @export
 #'
-pca_nspike <- function(eigval, nboot = 1000) {
-  lim_up <- hist_out(eigval, nboot = nboot)$lim[2]
+pca_nspike <- function(eigval, breaks = "FD", nboot = 100) {
+  lim_up <- hist_out(eigval, breaks = "FD", nboot = nboot)$lim[2]
   sum(eigval > lim_up)
 }
 

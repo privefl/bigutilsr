@@ -4,12 +4,16 @@
 \alias{pca_nspike}
 \title{Number of spikes in PCA}
 \usage{
-pca_nspike(eigval, nboot = 1000)
+pca_nspike(eigval, breaks = "FD", nboot = 100)
 }
 \arguments{
 \item{eigval}{Eigenvalues (squared singular values).}
 
-\item{nboot}{Number of bootstrap replicates. Default is \code{1000}.}
+\item{breaks}{Same parameter as for \code{hist()}. Default uses a robust version
+of Scott's rule. You can use \code{"FD"} or \code{nclass.FD} for a bit more bins.}
+
+\item{nboot}{Number of bootstrap replicates to estimate limits more robustly.
+Default is \code{NULL} (no bootstrap, even if \strong{I would recommend to use it}).}
 }
 \value{
 The estimated number of distant spikes.

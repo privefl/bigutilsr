@@ -16,7 +16,7 @@ U2 <- pca_adjust(U1, svd$d^2, M, N)
 (shrinkage <- attr(U2, "shrinkage"))
 
 # expect_gte(pca_nspike(svd$d^2, M, N, n.spikes.max = 20)$n.spikes, 3)
-expect_equal(length(shrinkage), 3)
+expect_gte(length(shrinkage), 3)
 
 # col <- 2:3
 # plot(U0[, col])

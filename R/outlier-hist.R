@@ -31,6 +31,8 @@ nclass.scottRob <- function(x) {
 #' Suitable for compact values (need a space between main values and outliers).
 #'
 #' @param x Numeric vector (with compact values).
+#' @param breaks Same parameter as for `hist()`. Default uses a robust version
+#'   of Scott's rule. You can use `"FD"` or `nclass.FD` for a bit more bins.
 #' @param pmax_out Percentage at each side that can be considered outliers at
 #'   each step. Default is `0.2`.
 #' @param nboot Number of bootstrap replicates to estimate limits more robustly.
@@ -58,14 +60,14 @@ nclass.scottRob <- function(x) {
 #' str(hist_out(x3))
 #' str(hist_out(x3, nboot = 999))
 #'
-hist_out <- function(x, pmax_out = 0.2, nboot = NULL) {
+hist_out <- function(x, breaks = nclass.scottRob, pmax_out = 0.2, nboot = NULL) {
 
   if (!is.null(nboot)) {
     boot_repl <- replicate(nboot, {
       x_boot <- sample(x, replace = TRUE)
-      hist_out(x_boot, pmax_out = pmax_out)$lim
+      hist_out(x_boot, breaks = breaks, pmax_out = pmax_out, nboot = NULL)$lim
     })
-    lim <- apply(boot_repl, 1, stats::median)
+    lim <- apply(boot_repl, 1, median)
     return(list(x = x[lim[1] < x & x < lim[2]], lim = lim, all_lim = boot_repl))
   }
 
@@ -74,7 +76,7 @@ hist_out <- function(x, pmax_out = 0.2, nboot = NULL) {
   repeat {
     # histogram without outliers
     x_no_out <- x[q_inf < x & x < q_sup]
-    h <- graphics::hist(x_no_out, breaks = nclass.scottRob, plot = FALSE)
+    h <- graphics::hist(x_no_out, breaks = breaks, plot = FALSE)
     # find empty regions
     ind_wh0 <- which(h$counts == 0)
     val_wh0 <- h$mids[ind_wh0]

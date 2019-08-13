@@ -1,5 +1,11 @@
 ################################################################################
 
+#' @importFrom robust covRob
+#' @export
+robust::covRob
+
+################################################################################
+
 #' Local Outlier Factor (LOF)
 #'
 #' LOF: Identifying Density-Based Local Outliers.

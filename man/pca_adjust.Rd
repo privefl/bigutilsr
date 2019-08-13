@@ -56,11 +56,13 @@ The \eqn{(i,j)^{th}} element of \code{test.scores} should denote the \eqn{j^{th}
 At least one of \code{n.spikes} and \code{n.spikes.max} must be provided. If \code{n.spikes} is provided then \code{n.spikes.max} is ignored, else \code{n.spikes.max} is used to find out the number of distant spikes using \code{\link{select.nspike}}.
 
 The argument \code{nonspikes.out} is ignored if \code{method="d.gsp"} or "\code{osp}".
+
+The argument \code{smooth} is useful when the user assumes the population spectral distribution to be continuous.
 }
 \references{
-Dey, R. and Lee, S. (2016).
-\emph{Asymptotic properties of Principal Component Analysis and shrinkage-bias adjustment under the Generalized Spiked Population model.}
-arXiv:1607.08647
+Dey, R. and Lee, S. (2019).
+\emph{Asymptotic properties of principal component analysis and shrinkage-bias adjustment under the generalized spiked population model.}
+Journal of Multivariate Analysis, Vol 173, 145-164.
 }
 \seealso{
 \code{\link[hdpca:pc_adjust]{hdpca::pc_adjust()}}

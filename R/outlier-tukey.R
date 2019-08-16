@@ -24,14 +24,26 @@
 #' which(x > q)
 tukey_mc_up <- function(x, coef = NULL, alpha = 0.05, a = -4, b = 3) {
 
-  if (is.null(coef)) {
-    m <- sum(!is.na(x))
-    alpha_m <- 1 - (1 - alpha)^(1/m)
-    coef <- (qnorm(alpha_m, lower.tail = FALSE) - 0.6744898) / 1.34898
+  q <- Inf
+
+  repeat {
+
+    x <- x[x < q]
+
+    if (is.null(coef)) {
+      m <- sum(!is.na(x))
+      alpha_m <- 1 - (1 - alpha)^(1/m)
+      coef <- (qnorm(alpha_m, lower.tail = FALSE) - 0.6744898) / 1.34898
+    }
+
+    q.new <- robustbase::adjboxStats(x, coef = coef, a = a, b = b,
+                                     do.conf = FALSE, do.out = FALSE)$fence[2]
+
+    if (q.new == q) break
+    q <- q.new
   }
 
-  robustbase::adjboxStats(x, coef = coef, a = a, b = b,
-                          do.conf = FALSE, do.out = FALSE)$fence[2]
+  q
 }
 
 ################################################################################

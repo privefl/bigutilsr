@@ -6,7 +6,7 @@
 \alias{bigutilsr-package}
 \title{bigutilsr: Utility Functions for Large-scale Data}
 \description{
-Utility functions for large-scale data. For now, package bigutilsr
+Utility functions for large-scale data. For now, package 'bigutilsr'
     mainly includes functions for outlier detection.
 }
 \seealso{

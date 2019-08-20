@@ -32,7 +32,7 @@ nclass.scottRob <- function(x) {
 #'
 #' @param x Numeric vector (with compact values).
 #' @param breaks Same parameter as for `hist()`. Default uses a robust version
-#'   of Scott's rule. You can use `"FD"` or `nclass.FD` for a bit more bins.
+#'   of Scott's rule. You can also use `"FD"` or `nclass.FD` for a bit more bins.
 #' @param pmax_out Percentage at each side that can be considered outliers at
 #'   each step. Default is `0.2`.
 #' @param nboot Number of bootstrap replicates to estimate limits more robustly.

@@ -10,7 +10,7 @@ hist_out(x, breaks = nclass.scottRob, pmax_out = 0.2, nboot = NULL)
 \item{x}{Numeric vector (with compact values).}
 
 \item{breaks}{Same parameter as for \code{hist()}. Default uses a robust version
-of Scott's rule. You can use \code{"FD"} or \code{nclass.FD} for a bit more bins.}
+of Scott's rule. You can also use \code{"FD"} or \code{nclass.FD} for a bit more bins.}
 
 \item{pmax_out}{Percentage at each side that can be considered outliers at
 each step. Default is \code{0.2}.}

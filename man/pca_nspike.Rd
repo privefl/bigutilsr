@@ -10,16 +10,28 @@ pca_nspike(eigval, breaks = "FD", nboot = 100)
 \item{eigval}{Eigenvalues (squared singular values).}
 
 \item{breaks}{Same parameter as for \code{hist()}. Default uses a robust version
-of Scott's rule. You can use \code{"FD"} or \code{nclass.FD} for a bit more bins.}
+of Scott's rule. You can also use \code{"FD"} or \code{nclass.FD} for a bit more bins.}
 
 \item{nboot}{Number of bootstrap replicates to estimate limits more robustly.
-Default is \code{NULL} (no bootstrap, even if \strong{I would recommend to use it}).}
+Default is \code{100}.}
 }
 \value{
 The estimated number of distant spikes.
 }
 \description{
 Estimate the number of distant spikes based on the histogram of eigenvalues.
+}
+\examples{
+N <- 400; M <- 2000; K <- 8
+U <- matrix(0, N, K); U[] <- rnorm(length(U))
+V <- matrix(0, M, K); V[] <- rnorm(length(V))
+# X = U V^T + E
+X <- tcrossprod(U, V) + 15 * rnorm(N * M)
+pca <- prcomp(X)
+eigval <- pca$sdev^2
+plot(head(eigval, -1), log = "xy", pch = 20)
+pca_nspike(eigval)
+
 }
 \seealso{
 \code{\link[hdpca:select.nspike]{hdpca::select.nspike()}}

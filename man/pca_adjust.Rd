@@ -59,6 +59,22 @@ The argument \code{nonspikes.out} is ignored if \code{method="d.gsp"} or "\code{
 
 The argument \code{smooth} is useful when the user assumes the population spectral distribution to be continuous.
 }
+\examples{
+X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
+N <- 400; M <- ncol(X)
+ind <- sample(nrow(X), N)
+# Compute SVD using one part of samples
+svd <- svd(X[ind, ])
+U <- sweep(svd$u, 2, svd$d, '*')
+plot(U[, 2:3])
+# Projecting other samples
+U1 <- X[-ind, ] \%*\% svd$v
+points(U1[, 2:3], col = "red", pch = 20)               # shrunk towards 0
+U2 <- pca_adjust(U1, svd$d^2, M, N)
+points(U2[, 2:3], col = "blue", pch = 20)              # unshrunk
+attr(U2, "shrinkage")
+
+}
 \references{
 Dey, R. and Lee, S. (2019).
 \emph{Asymptotic properties of principal component analysis and shrinkage-bias adjustment under the generalized spiked population model.}

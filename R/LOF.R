@@ -25,6 +25,20 @@ robust::covRob
 #'
 #' @export
 #'
+#' @examples
+#' X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
+#' svd <- svd(scale(X))
+#'
+#' llof <- LOF(svd$u[, 1:10])
+#' hist(llof, breaks = nclass.scottRob)
+#' tukey_mc_up(llof)
+#'
+#' lof <- LOF(svd$u[, 1:10], log = FALSE)
+#' hist(lof, breaks = nclass.scottRob)
+#' str(hist_out(lof))
+#' str(hist_out(lof, nboot = 100))
+#' str(hist_out(lof, nboot = 100, breaks = "FD"))
+#'
 LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
                 robMaha = FALSE, log = TRUE) {
 

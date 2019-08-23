@@ -1,3 +1,5 @@
+^docs$
+^tmp-tests$
 ^tmp-save$
 ^tests/testthat/Rplots\.pdf$
 ^codecov\.yml$

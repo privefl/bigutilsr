@@ -25,6 +25,7 @@ procrustes_diffdim <- function(Y, X, n_iter_max = 10e3, epsilon_min = 1e-6) {
 
 #### First example ####
 X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
+X <- scale(X)
 pop <- rep(1:3, c(143, 167, 207))
 
 N <- 300; M <- ncol(X)
@@ -37,20 +38,63 @@ U1 <- X[-ind, ] %*% svd$v[, 1:4]
 attr(bigutilsr::pca_adjust(U1, svd$d^2, M, N), "shrinkage")
 
 PC.ref <- X[ind, ] %*% svd$v[, 1:4]
-proj <- t(apply(X[-ind, ], 1, function(x.new) {
+
+ind2 <- sample(217, 50)
+proj <- t(apply(X[-ind, ][ind2, ], 1, function(x.new) {
   X.aug <- rbind(x.new, X[ind, ])
-  svd.aug <- svd(X.aug, nu = 10, nv = 0)
+  svd.aug <- svd(X.aug, nu = 10, nv = 0)          # taking most of the time
   PC.aug <- sweep(svd.aug$u, 2, svd.aug$d[1:10], '*')
   proc <- procrustes_diffdim(PC.ref, PC.aug[-1, ])
   apply_procrustes(PC.aug[1, , drop = FALSE], proc)
 }))
 
 rbind(
-  apply(U1 / proj[, 1:4], 2, median),
+  coef <- apply(U1[ind2, ] / proj[, 1:4], 2, median),
   attr(bigutilsr::pca_adjust(U1, svd$d^2, M, N, n.spikes = 4), "shrinkage")
 )
 
-col <- 3:4
+col <- 2:3
 plot(PC.ref[, col])
 points(U1[, col], col = "red", pch = 20)
 points(proj[, col], col = "blue", pch = 20)
+points(sweep(U1[, col], 2, coef, '/'), col = "green", pch = 20)
+
+
+plot(U1[ind2, 1], proj[, 1])
+(mylm <- lm(proj[, 1] ~ U1[ind2, 1] + 0))
+abline(mylm, col = "red")
+
+plot(U1[ind2, 2], proj[, 2])
+(mylm <- lm(proj[, 2] ~ U1[ind2, 2] + 0))
+abline(mylm, col = "red")
+
+plot(U1[ind2, 3], proj[, 3])
+(mylm <- lm(proj[, 3] ~ U1[ind2, 3] + 0))
+abline(mylm, col = "red")
+
+plot(U1[ind2, 4], proj[, 4])
+(mylm <- lm(proj[, 4] ~ U1[ind2, 4] + 0))
+abline(mylm, col = "red")
+
+coef2 <- sapply(1:4, function(j) {
+  c(
+    lm(proj[, j] ~ U1[ind2, j] + 0)$coefficients[[1]],
+    robust::lmRob(proj[, j] ~ U1[ind2, j] + 0,
+                  weights = 1 / abs(U1[ind2, j]))$coefficients[[1]]
+  )
+})
+coef2
+
+rbind(
+  1 / coef2[2, ],
+  attr(bigutilsr::pca_adjust(U1, svd$d^2, M, N, n.spikes = 7), "shrinkage")
+)
+
+
+col <- 1:2
+plot(PC.ref[, col])
+points(U1[, col], col = "red", pch = 20)
+# points(proj[, col], col = "blue", pch = 20)
+points(sweep(U1[, col], 2, coef2[2, col], '*'), col = "green", pch = 20)
+
+# plot(proj[, col], sweep(U1[, col], 2, coef2[2, col], '*')[ind2, ]); abline(0, 1, col = "red")

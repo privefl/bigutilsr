@@ -34,10 +34,10 @@ svd <- svd(X[ind, ])
 # plot(svd$d^2, log = "xy")
 # hist(svd$d[svd$d < 80]^2, breaks = nclass.scottRob)
 
-U1 <- X[-ind, ] %*% svd$v[, 1:4]
+U1 <- X[-ind, ] %*% svd$v[, 1:10]
 attr(bigutilsr::pca_adjust(U1, svd$d^2, M, N), "shrinkage")
 
-PC.ref <- X[ind, ] %*% svd$v[, 1:4]
+PC.ref <- X[ind, ] %*% svd$v[, 1:5]
 
 ind2 <- sample(217, 50)
 proj <- t(apply(X[-ind, ][ind2, ], 1, function(x.new) {
@@ -48,16 +48,15 @@ proj <- t(apply(X[-ind, ][ind2, ], 1, function(x.new) {
   apply_procrustes(PC.aug[1, , drop = FALSE], proc)
 }))
 
-rbind(
-  coef <- apply(U1[ind2, ] / proj[, 1:4], 2, median),
-  attr(bigutilsr::pca_adjust(U1, svd$d^2, M, N, n.spikes = 4), "shrinkage")
-)
 
-col <- 2:3
+(coef <- apply(U1[ind2, ] / proj, 2, median))
+(attr(bigutilsr::pca_adjust(U1, svd$d^2, M, N, n.spikes = 5), "shrinkage"))
+
+col <- 4:5
 plot(PC.ref[, col])
 points(U1[, col], col = "red", pch = 20)
 points(proj[, col], col = "blue", pch = 20)
-points(sweep(U1[, col], 2, coef, '/'), col = "green", pch = 20)
+points(sweep(U1[, col], 2, coef[col], '/'), col = "green", pch = 20)
 
 
 plot(U1[ind2, 1], proj[, 1])
@@ -76,20 +75,18 @@ plot(U1[ind2, 4], proj[, 4])
 (mylm <- lm(proj[, 4] ~ U1[ind2, 4] + 0))
 abline(mylm, col = "red")
 
-coef2 <- sapply(1:4, function(j) {
+plot(U1[ind2, 5], proj[, 5])
+(mylm <- lm(proj[, 5] ~ U1[ind2, 5] + 0))
+abline(mylm, col = "red")
+
+coef2 <- sapply(1:10, function(j) {
   c(
     lm(proj[, j] ~ U1[ind2, j] + 0)$coefficients[[1]],
-    robust::lmRob(proj[, j] ~ U1[ind2, j] + 0,
-                  weights = 1 / abs(U1[ind2, j]))$coefficients[[1]]
+    robust::lmRob(proj[, j] ~ U1[ind2, j] + 0)$coefficients[[1]],
+    summary(lm(proj[, j] ~ U1[ind2, j] + 0))$r.squared
   )
 })
 coef2
-
-rbind(
-  1 / coef2[2, ],
-  attr(bigutilsr::pca_adjust(U1, svd$d^2, M, N, n.spikes = 7), "shrinkage")
-)
-
 
 col <- 1:2
 plot(PC.ref[, col])

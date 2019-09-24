@@ -6,11 +6,17 @@ V <- matrix(0, p, 10); V[] <- rnorm(length(V))
 X <- tcrossprod(U, V) + 5 * matrix(rnorm(n * p), n, p)
 system.time(svd2 <- PRIMME::svds(X, 10, isreal = TRUE))
 
-ind <- -(1:100)
+ind <- -(1:1000)
 A <- -X[, -ind]
 UT_A <- crossprod(svd2$u, A)
 M_A <- A - svd2$u %*% UT_A
 svd_A <- svd(M_A)
+U_A <- svd_A$u
+# eig_A <- eigen(crossprod(A) - crossprod(UT_A), symmetric = TRUE)
+# VD_A <- sweep(eig_A$vectors, 2, sqrt(eig_A$values), '*')
+# VDI_A <- sweep(VD_A, 2, eig_A$values, '/')
+# U_A <- A %*% VD_A - svd2$u %*% UT_A %*% VDI_A
+
 BT_V <- svd2$v[-ind, ]
 # B <- matrix(0, ncol(X), length(ind)); B[cbind(-ind, seq_along(ind))] <- 1
 # all.equal(BT_V, crossprod(B, svd2$v))
@@ -18,9 +24,9 @@ BT_V <- svd2$v[-ind, ]
 # M_B <- -tcrossprod(svd2$v, BT_V)
 # M_B[cbind(-ind, seq_along(ind))] <- M_B[cbind(-ind, seq_along(ind))] + 1
 # svd_B <- svd(M_B)
-eig <- eigen(diag(nrow(BT_V)) - tcrossprod(BT_V), symmetric = TRUE)
-VD_B <- sweep(eig$vectors, 2, sqrt(eig$values), '*')
-VDI_B <- sweep(VD_B, 2, eig$values, '/')
+eig_B <- eigen(diag(nrow(BT_V)) - tcrossprod(BT_V), symmetric = TRUE)
+VD_B <- sweep(eig_B$vectors, 2, sqrt(eig_B$values), '*')
+VDI_B <- sweep(VD_B, 2, eig_B$values, '/')
 U_B <- -svd2$v %*% crossprod(BT_V, VDI_B)
 U_B[-ind, ] <- U_B[-ind, ] + VDI_B
 
@@ -33,7 +39,7 @@ Q3 <- UT_A %*% VD_B
 Q4 <- crossprod(VD_A, VD_B)
 Q <- cbind(rbind(Q1, Q2), rbind(Q3, Q4))
 svd_Q <- svd(Q, nu = 10, nv = 10)
-U2 <- cbind(svd2$u, svd_A$u) %*% svd_Q$u
+U2 <- cbind(svd2$u, U_A) %*% svd_Q$u
 V2 <- cbind(svd2$v, U_B) %*% svd_Q$v
 
 # MTM <- crossprod(A) - crossprod(crossprod(svd2$u, A))

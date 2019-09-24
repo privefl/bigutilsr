@@ -27,8 +27,8 @@ BT_V <- svd2$v[-ind, ]
 eig_B <- eigen(diag(nrow(BT_V)) - tcrossprod(BT_V), symmetric = TRUE)
 VD_B <- sweep(eig_B$vectors, 2, sqrt(eig_B$values), '*')
 VDI_B <- sweep(VD_B, 2, eig_B$values, '/')
-U_B <- -svd2$v %*% crossprod(BT_V, VDI_B)
-U_B[-ind, ] <- U_B[-ind, ] + VDI_B
+# U_B <- -svd2$v %*% crossprod(BT_V, VDI_B)
+# U_B[-ind, ] <- U_B[-ind, ] + VDI_B
 
 
 Q1 <- UT_A %*% BT_V + diag(svd2$d)
@@ -40,7 +40,8 @@ Q4 <- crossprod(VD_A, VD_B)
 Q <- cbind(rbind(Q1, Q2), rbind(Q3, Q4))
 svd_Q <- svd(Q, nu = 10, nv = 10)
 U2 <- cbind(svd2$u, U_A) %*% svd_Q$u
-V2 <- cbind(svd2$v, U_B) %*% svd_Q$v
+BT_V2 <- svd2$v[ind, ]
+V2 <- cbind(BT_V2, BT_V2 %*% crossprod(-BT_V, VDI_B)) %*% svd_Q$v
 
 # MTM <- crossprod(A) - crossprod(crossprod(svd2$u, A))
 
@@ -56,8 +57,8 @@ system.time(
   svd2.4 <- PRIMME::svds(X2, 10, isreal = TRUE, u0 = u0,
                          v0 = crossprod(X2, sweep(u0, 2, svd2$d, '/'))))
 system.time(
-  svd2.5 <- PRIMME::svds(X2, 10, isreal = TRUE, u0 = NULL, v0 = V2[ind, ]))
+  svd2.5 <- PRIMME::svds(X2, 10, isreal = TRUE, u0 = NULL, v0 = V2))
 
 plot(U2, svd2.1$u); abline(0, 1, col = "red"); abline(0, -1, col = "red")
-plot(V2[ind, ], svd2.1$v); abline(0, 1, col = "red"); abline(0, -1, col = "red")
+plot(V2, svd2.1$v); abline(0, 1, col = "red"); abline(0, -1, col = "red")
 all.equal(svd_Q$d[1:10], svd2.1$d)

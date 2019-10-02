@@ -1,13 +1,13 @@
 Package: bigutilsr
 Title: Utility Functions for Large-scale Data 
-Version: 0.1.1
-Date: 2019-08-20
+Version: 0.1.2
+Date: 2019-10-02
 Authors@R: 
   person("Florian", "Privé", 
          email = "florian.prive.21@gmail.com", 
          role = c("aut", "cre"))
 Description: Utility functions for large-scale data. For now, package 'bigutilsr'
-    mainly includes functions for outlier detection.
+    mainly includes functions for outlier detection and PCA projection.
 License: GPL-3
 Encoding: UTF-8
 Language: en-US

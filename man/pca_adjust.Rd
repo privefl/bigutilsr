@@ -66,12 +66,14 @@ ind <- sample(nrow(X), N)
 # Compute SVD using one part of samples
 svd <- svd(X[ind, ])
 U <- sweep(svd$u, 2, svd$d, '*')
-plot(U[, 2:3])
+col <- 2:3
+plot(U[, col])
+points(cbind(0, 0), pch = 8, col = "green", cex = 2)
 # Projecting other samples
 U1 <- X[-ind, ] \%*\% svd$v
-points(U1[, 2:3], col = "red", pch = 20)               # shrunk towards 0
+points(U1[, col], col = "red", pch = 20)               # shrunk towards 0
 U2 <- pca_adjust(U1, svd$d^2, M, N)
-points(U2[, 2:3], col = "blue", pch = 20)              # unshrunk
+points(U2[, col], col = "blue", pch = 20)              # unshrunk
 attr(U2, "shrinkage")
 
 }

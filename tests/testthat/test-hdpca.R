@@ -18,16 +18,23 @@ U2 <- pca_adjust(U1, svd$d^2, M, N)
 # expect_gte(pca_nspike(svd$d^2, M, N, n.spikes.max = 20)$n.spikes, 3)
 expect_gte(length(shrinkage), 3)
 
+proj <- pca_OADP_proj(X[-ind, ], loadings = svd$v[, 1:5], sval = svd$d)
+expect_equal(proj$simple_proj, U1[, 1:5])
+U3 <- proj$OADP_proj
+
 # col <- 2:3
 # plot(U0[, col])
 # points(U1[, col], col = "red", pch = 20)
 # points(U2[, col], col = "blue", pch = 20)
+# points(U3[, col], col = "green", pch = 20)
 
 ref   <- by(U0[, 1:3], pop[ind],  colMeans)
 pred1 <- by(U1[, 1:3], pop[-ind], colMeans)
 pred2 <- by(U2[, 1:3], pop[-ind], colMeans)
+pred3 <- by(U3[, 1:3], pop[-ind], colMeans)
 lapply(seq_along(ref), function(k) {
   expect_lt(crossprod(ref[[k]] - pred2[[k]]), crossprod(ref[[k]] - pred1[[k]]))
+  expect_lt(crossprod(ref[[k]] - pred3[[k]]), crossprod(ref[[k]] - pred1[[k]]))
 })
 
 

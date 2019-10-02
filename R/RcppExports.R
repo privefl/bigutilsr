@@ -5,3 +5,7 @@ roll_mean <- function(x, w) {
     .Call(`_bigutilsr_roll_mean`, x, w)
 }
 
+rowSumsSq <- function(source) {
+    .Call(`_bigutilsr_rowSumsSq`, source)
+}
+

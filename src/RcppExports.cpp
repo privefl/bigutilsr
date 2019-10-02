@@ -17,9 +17,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// rowSumsSq
+NumericVector rowSumsSq(const NumericMatrix& source);
+RcppExport SEXP _bigutilsr_rowSumsSq(SEXP sourceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type source(sourceSEXP);
+    rcpp_result_gen = Rcpp::wrap(rowSumsSq(source));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_bigutilsr_roll_mean", (DL_FUNC) &_bigutilsr_roll_mean, 2},
+    {"_bigutilsr_rowSumsSq", (DL_FUNC) &_bigutilsr_rowSumsSq, 1},
     {NULL, NULL, 0}
 };
 

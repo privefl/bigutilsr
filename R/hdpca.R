@@ -92,8 +92,9 @@ pca_adjust <- function(test.scores, train.eval, p,
 #' @param sval Singular values of the reference PCA (sqrt of the eigen values).
 #'   Only the `ncol(loadings)` first ones will be used.
 #'
-#' @return A list with the simple projection `X %*% loadings` and the projection
-#'   based on OADP.
+#' @return
+#'  - `pca_OADP_proj()`: A list with the simple projection `X %*% loadings`
+#'    and the projection based on OADP.
 #' @export
 #'
 #' @examples
@@ -113,20 +114,37 @@ pca_adjust <- function(test.scores, train.eval, p,
 #'
 pca_OADP_proj <- function(X, loadings, sval) {
 
-  V <- loadings
-  K <- ncol(V)
+  XV     <- X %*% loadings
+  X_norm <- rowSumsSq(X)
+
+  list(simple_proj = XV, OADP_proj = pca_OADP_proj2(XV, X_norm, sval))
+}
+
+################################################################################
+
+#' @rdname pca_OADP_proj
+#'
+#' @param XV `X %*% loadings`
+#' @param X_norm Vector of sums of squared rows (e.g. `rowSums(X^2)`).
+#'
+#' @return
+#'  - `pca_OADP_proj2()`: The projection based on OADP only
+#'    (a matrix of same size of `XV`).
+#' @export
+#'
+pca_OADP_proj2 <- function(XV, X_norm, sval) {
+
+  m <- nrow(XV)
+  K <- ncol(XV)
   d <- sval[1:K]
 
-  L_all <- X %*% V
-  X_norm <- rowSumsSq(X)
   R <- diag(c(d^2, 0))
 
-  m <- nrow(X)
   proj <- matrix(0, m, K)
 
   for (i in seq_len(m)) {
 
-    R[K + 1, ] <- R[, K + 1] <- c(L_all[i, ] * d, X_norm[i])
+    R[K + 1, ] <- R[, K + 1] <- c(XV[i, ] * d, X_norm[i])
     eig <- eigen(R, symmetric = TRUE)
 
     svd2 <- svd(eig$vectors[1:K, 1:K, drop = FALSE])
@@ -135,7 +153,7 @@ pca_OADP_proj <- function(X, loadings, sval) {
       eig$vectors[K + 1, 1:K, drop = FALSE] %*% svd2$v, svd2$u)
   }
 
-  list(simple_proj = L_all, OADP_proj = sweep(proj, 2, d, '*'))
+  sweep(proj, 2, d, '*')
 }
 
 ################################################################################

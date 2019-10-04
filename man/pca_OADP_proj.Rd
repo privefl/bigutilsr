@@ -2,9 +2,12 @@
 % Please edit documentation in R/hdpca.R
 \name{pca_OADP_proj}
 \alias{pca_OADP_proj}
+\alias{pca_OADP_proj2}
 \title{OADP projection}
 \usage{
 pca_OADP_proj(X, loadings, sval)
+
+pca_OADP_proj2(XV, X_norm, sval)
 }
 \arguments{
 \item{X}{Data to get PC loadings into.}
@@ -13,10 +16,21 @@ pca_OADP_proj(X, loadings, sval)
 
 \item{sval}{Singular values of the reference PCA (sqrt of the eigen values).
 Only the \code{ncol(loadings)} first ones will be used.}
+
+\item{XV}{\code{X \%*\% loadings}}
+
+\item{X_norm}{Vector of sums of squared rows (e.g. \code{rowSums(X^2)}).}
 }
 \value{
-A list with the simple projection \code{X \%*\% loadings} and the projection
-based on OADP.
+\itemize{
+\item \code{pca_OADP_proj()}: A list with the simple projection \code{X \%*\% loadings}
+and the projection based on OADP.
+}
+
+\itemize{
+\item \code{pca_OADP_proj2()}: The projection based on OADP only
+(a matrix of same size of \code{XV}).
+}
 }
 \description{
 Online Augmentation, Decomposition, and Procrustes (OADP) projection of

@@ -73,3 +73,48 @@ LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
 }
 
 ################################################################################
+
+#' Probabilistic set distance
+#'
+#' @inheritParams LOF
+#' @param kNN Number of nearest neighbours to use. Default is `5`.
+#'
+#' @references
+#' Kriegel, Hans-Peter, et al. "LoOP: local outlier probabilities." Proceedings
+#' of the 18th ACM conference on Information and knowledge management. ACM, 2009.
+#'
+#' @export
+#'
+#' @examples
+#' X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
+#' svd <- svd(scale(X))
+#' U <- svd$u[, 1:10]
+#'
+#' test <- prob_dist(U)
+#' plof <- test$dist.self / test$dist.nn
+#' plof_ish <- test$dist.self / sqrt(test$dist.nn)
+#' plot(U[, 1:2], col = (plof_ish > tukey_mc_up(plof_ish)) + 1, pch = 20)
+#' plot(U[, 3:4], col = (plof_ish > tukey_mc_up(plof_ish)) + 1, pch = 20)
+#' plot(U[, 5:6], col = (plof_ish > tukey_mc_up(plof_ish)) + 1, pch = 20)
+#'
+prob_dist <- function(U, kNN = 5, robMaha = FALSE, ncores = 1) {
+
+  if (robMaha) {
+    maha <- covRob(U, estim = "pairwiseGK", distance = FALSE, corr = FALSE)
+    eigs <- eigen(unname(maha$cov), symmetric = TRUE)
+    U <- U %*% sweep(eigs$vectors, 2, sqrt(eigs$values), '/')
+  }
+
+  knn <- knn_parallel(U, k = kNN + 1, ncores = ncores)
+  ids <- knn$nn.idx[, -1, drop = FALSE]
+  dists <- knn$nn.dists[, -1, drop = FALSE]
+
+  plof.num <- sqrt(rowMeans(dists^2))
+  plof.deno <- sapply(bigparallelr::rows_along(ids), function(i) {
+    mean(plof.num[ids[i, ]])
+  })
+
+  list(dist.self = plof.num, dist.nn = plof.deno)
+}
+
+################################################################################

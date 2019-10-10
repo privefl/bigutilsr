@@ -4,10 +4,6 @@
 #' @export
 robust::covRob
 
-#' @importFrom nabor knn
-#' @export
-nabor::knn
-
 ################################################################################
 
 #' Local Outlier Factor (LOF)

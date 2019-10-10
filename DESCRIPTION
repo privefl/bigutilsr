@@ -20,6 +20,7 @@ BugReports: https://github.com/privefl/bigutilsr/issues
 LinkingTo: 
     Rcpp
 Imports: 
+    bigparallelr,
     hdpca,
     nabor,
     Rcpp,

@@ -18,6 +18,7 @@ robust::covRob
 #' @param robMaha Whether to use a robust Mahalanobis distance instead of the
 #'   normal euclidean distance? Default is `FALSE`, meaning using euclidean.
 #' @param log Whether to return the logarithm of LOFs? Default is `TRUE`.
+#' @param ncores Number of cores to use. Default is `1`.
 #'
 #' @references
 #' Breunig, Markus M., et al. "LOF: identifying density-based local outliers."
@@ -40,7 +41,7 @@ robust::covRob
 #' str(hist_out(lof, nboot = 100, breaks = "FD"))
 #'
 LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
-                robMaha = FALSE, log = TRUE) {
+                robMaha = FALSE, log = TRUE, ncores = 1) {
 
   if (robMaha) {
     maha <- covRob(U, estim = "pairwiseGK", distance = FALSE, corr = FALSE)
@@ -48,7 +49,7 @@ LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
     U <- U %*% sweep(eigs$vectors, 2, sqrt(eigs$values), '/')
   }
 
-  knn <- nabor::knn(U, k = max(seq_k) + 1)
+  knn <- knn_parallel(U, k = max(seq_k) + 1, ncores = ncores)
   ids <- knn$nn.idx[, -1, drop = FALSE]
   dists <- knn$nn.dists[, -1, drop = FALSE]
 

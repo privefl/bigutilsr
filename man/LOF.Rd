@@ -5,7 +5,7 @@
 \title{Local Outlier Factor (LOF)}
 \usage{
 LOF(U, seq_k = c(4, 10, 30), combine = max, robMaha = FALSE,
-  log = TRUE)
+  log = TRUE, ncores = 1)
 }
 \arguments{
 \item{U}{A matrix, from which to detect outliers (rows). E.g. PC scores.}
@@ -20,6 +20,8 @@ Default is \code{c(4, 10, 30)} and use \code{max} to combine (see \code{combine}
 normal euclidean distance? Default is \code{FALSE}, meaning using euclidean.}
 
 \item{log}{Whether to return the logarithm of LOFs? Default is \code{TRUE}.}
+
+\item{ncores}{Number of cores to use. Default is \code{1}.}
 }
 \description{
 LOF: Identifying Density-Based Local Outliers.

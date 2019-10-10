@@ -6,6 +6,7 @@ test_that("LOF() works", {
   svd <- svd(scale(X))
   # plot(head(svd$d, -1), log = "xy")
   llof <- LOF(svd$u[, 1:10])
+  expect_identical(LOF(svd$u[, 1:10], ncores = 2), llof)
   # hist(llof, breaks = 20)
   lof <- LOF(svd$u[, 1:10], log = FALSE)
   expect_equal(log(lof), llof)

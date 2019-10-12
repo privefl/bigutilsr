@@ -138,22 +138,23 @@ pca_OADP_proj2 <- function(XV, X_norm, sval) {
   K <- ncol(XV)
   d <- sval[1:K]
 
-  R <- diag(c(d^2, 0))
+  QtQ <- diag(c(d^2, 0))
 
   proj <- matrix(0, m, K)
 
   for (i in seq_len(m)) {
 
-    R[K + 1, ] <- R[, K + 1] <- c(XV[i, ] * d, X_norm[i])
-    eig <- eigen(R, symmetric = TRUE)
+    QtQ[K + 1, ] <- QtQ[, K + 1] <- c(XV[i, ] * d, X_norm[i])
+    eig <- eigen(QtQ, symmetric = TRUE)
 
-    svd2 <- svd(eig$vectors[1:K, 1:K, drop = FALSE])
-    rho <- sum(svd2$d) / sum(svd2$d^2)
+    V2 <- sweep(eig$vectors, 2, sqrt(eig$values), '*')
+    svd2 <- svd(sweep(V2[1:K, 1:K, drop = FALSE], 1, d, '*'))
+    rho <- sum(svd2$d) / cumsum(rowSumsSq(V2))[K]
     proj[i, ] <- rho * tcrossprod(
-      eig$vectors[K + 1, 1:K, drop = FALSE] %*% svd2$v, svd2$u)
+      V2[K + 1, 1:K, drop = FALSE] %*% svd2$v, svd2$u)
   }
 
-  sweep(proj, 2, d, '*')
+  proj
 }
 
 ################################################################################

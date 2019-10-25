@@ -147,11 +147,11 @@ pca_OADP_proj2 <- function(XV, X_norm, sval) {
     QtQ[K + 1, ] <- QtQ[, K + 1] <- c(XV[i, ] * d, X_norm[i])
     eig <- eigen(QtQ, symmetric = TRUE)
 
-    V2 <- sweep(eig$vectors, 2, sqrt(eig$values), '*')
-    svd2 <- svd(sweep(V2[1:K, 1:K, drop = FALSE], 1, d, '*'))
+    V2 <- sweep(eig$vectors, 2, sqrt(eig$values), '*')[, 1:K, drop = FALSE]
+    svd2 <- svd(sweep(V2[1:K, , drop = FALSE], 1, d, '*'))
     rho <- sum(svd2$d) / cumsum(rowSumsSq(V2))[K]
     proj[i, ] <- rho * tcrossprod(
-      V2[K + 1, 1:K, drop = FALSE] %*% svd2$v, svd2$u)
+      V2[K + 1, , drop = FALSE] %*% svd2$v, svd2$u)
   }
 
   proj

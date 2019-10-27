@@ -36,3 +36,6 @@ plot(U[, 5:6], col = (plof_ish > tukey_mc_up(plof_ish)) + 1, pch = 20)
 Kriegel, Hans-Peter, et al. "LoOP: local outlier probabilities." Proceedings
 of the 18th ACM conference on Information and knowledge management. ACM, 2009.
 }
+\seealso{
+\code{\link[=LOF]{LOF()}} \code{\link[=to_maha]{to_maha()}}
+}

@@ -1,5 +1,20 @@
 context("test-lof")
 
+test_that("to_maha() works", {
+
+  X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
+  svd <- svd(scale(X))
+  U <- svd$u[, 1:5]
+  maha <- covRob(U, estim = "pairwiseGK")
+  U.maha <- to_maha(U)
+  expect_equal(rowSums(U.maha^2), maha$dist)
+
+  mat <- matrix(rnorm(500), 100, 5)
+  mat.maha <- attr(U.maha, "trans")(mat)
+  expect_equal(rowSums(mat.maha^2),
+               stats::mahalanobis(mat, maha$center, maha$cov))
+})
+
 test_that("LOF() works", {
 
   X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))

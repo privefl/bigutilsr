@@ -34,6 +34,10 @@ llof <- LOF(svd$u[, 1:10])
 hist(llof, breaks = nclass.scottRob)
 tukey_mc_up(llof)
 
+llof_maha <- LOF(svd$u[, 1:10], robMaha = TRUE)
+hist(llof_maha, breaks = nclass.scottRob)
+tukey_mc_up(llof_maha)
+
 lof <- LOF(svd$u[, 1:10], log = FALSE)
 hist(lof, breaks = nclass.scottRob)
 str(hist_out(lof))
@@ -44,4 +48,7 @@ str(hist_out(lof, nboot = 100, breaks = "FD"))
 \references{
 Breunig, Markus M., et al. "LOF: identifying density-based local outliers."
 ACM sigmod record. Vol. 29. No. 2. ACM, 2000.
+}
+\seealso{
+\code{\link[=prob_dist]{prob_dist()}} \code{\link[=to_maha]{to_maha()}}
 }

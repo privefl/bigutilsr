@@ -1,4 +1,4 @@
-context("test-hdpca")
+context("test-pca-project")
 
 #### First example ####
 X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
@@ -12,11 +12,6 @@ svd <- svd(X[ind, ])
 
 expect_equal(U0 <- sweep(svd$u, 2, svd$d, '*'), X[ind, ] %*% svd$v)
 U1 <- X[-ind, ] %*% svd$v
-U2 <- pca_adjust(U1, svd$d^2, M, N)
-(shrinkage <- attr(U2, "shrinkage"))
-
-# expect_gte(pca_nspike(svd$d^2, M, N, n.spikes.max = 20)$n.spikes, 3)
-expect_gte(length(shrinkage), 3)
 
 proj <- pca_OADP_proj(X[-ind, ], loadings = svd$v[, 1:5], sval = svd$d)
 expect_equal(proj$simple_proj, U1[, 1:5])
@@ -30,10 +25,8 @@ U3 <- proj$OADP_proj
 
 ref   <- by(U0[, 1:3], pop[ind],  colMeans)
 pred1 <- by(U1[, 1:3], pop[-ind], colMeans)
-pred2 <- by(U2[, 1:3], pop[-ind], colMeans)
 pred3 <- by(U3[, 1:3], pop[-ind], colMeans)
 lapply(seq_along(ref), function(k) {
-  expect_lt(crossprod(ref[[k]] - pred2[[k]]), crossprod(ref[[k]] - pred1[[k]]))
   expect_lt(crossprod(ref[[k]] - pred3[[k]]), crossprod(ref[[k]] - pred1[[k]]))
 })
 

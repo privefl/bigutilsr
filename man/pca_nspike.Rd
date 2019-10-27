@@ -33,6 +33,3 @@ plot(head(eigval, -1), log = "xy", pch = 20)
 pca_nspike(eigval)
 
 }
-\seealso{
-\code{\link[hdpca:select.nspike]{hdpca::select.nspike()}}
-}

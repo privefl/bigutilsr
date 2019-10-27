@@ -11,8 +11,6 @@
 #'
 #' @return The estimated number of distant spikes.
 #'
-#' @seealso [hdpca::select.nspike()]
-#'
 #' @export
 #'
 #' @examples
@@ -29,55 +27,6 @@
 pca_nspike <- function(eigval, breaks = "FD", nboot = 100) {
   lim_up <- hist_out(eigval, breaks = "FD", nboot = nboot)$lim[2]
   sum(eigval > lim_up)
-}
-
-################################################################################
-
-#' @inherit hdpca::pc_adjust title description details params references
-#'
-#' @return
-#' A matrix containing the bias-adjusted PC scores.
-#' The dimension of the matrix is the same as the dimension of `test.scores`.
-#'
-#' Also, an attribute `attr(*, "shrinkage")` containing the shrinkage factors.
-#' Note that the number of shrinkage factors can be smaller than the number of
-#' columns of `test.scores`; it corresponds to the estimated number of spikes.
-#'
-#' @seealso [hdpca::pc_adjust()]
-#'
-#' @export
-#'
-#' @examples
-#' X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
-#' N <- 400; M <- ncol(X)
-#' ind <- sample(nrow(X), N)
-#' # Compute SVD using one part of samples
-#' svd <- svd(X[ind, ])
-#' U <- sweep(svd$u, 2, svd$d, '*')
-#' col <- 2:3
-#' plot(U[, col])
-#' points(cbind(0, 0), pch = 8, col = "green", cex = 2)
-#' # Projecting other samples
-#' U1 <- X[-ind, ] %*% svd$v
-#' points(U1[, col], col = "red", pch = 20)               # shrunk towards 0
-#' U2 <- pca_adjust(U1, svd$d^2, M, N)
-#' points(U2[, col], col = "blue", pch = 20)              # unshrunk
-#' attr(U2, "shrinkage")
-#'
-pca_adjust <- function(test.scores, train.eval, p,
-                       n = length(train.eval),
-                       method = c("d.gsp", "l.gsp", "osp"),
-                       n.spikes = pca_nspike(train.eval)) {
-
-  stopifnot(length(dim(test.scores)) == 2)
-
-  shrinkage <- hdpca::hdpc_est(train.eval, p, n, method,
-                               n.spikes = n.spikes)$shrinkage
-
-  m <- min(length(shrinkage), ncol(test.scores))
-  for (k in seq_len(m)) test.scores[, k] <- test.scores[, k] / shrinkage[k]
-
-  structure(test.scores, shrinkage = shrinkage[1:m])
 }
 
 ################################################################################

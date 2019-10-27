@@ -22,7 +22,6 @@ LinkingTo:
     Rcpp
 Imports: 
     bigparallelr,
-    hdpca,
     nabor,
     Rcpp,
     robustbase,

@@ -1,36 +1,5 @@
 ################################################################################
 
-#' Number of spikes in PCA
-#'
-#' Estimate the number of distant spikes based on the histogram of eigenvalues.
-#'
-#' @param eigval Eigenvalues (squared singular values).
-#' @param nboot Number of bootstrap replicates to estimate limits more robustly.
-#'   Default is `100`.
-#' @inheritParams hist_out
-#'
-#' @return The estimated number of distant spikes.
-#'
-#' @export
-#'
-#' @examples
-#' N <- 400; M <- 2000; K <- 8
-#' U <- matrix(0, N, K); U[] <- rnorm(length(U))
-#' V <- matrix(0, M, K); V[] <- rnorm(length(V))
-#' # X = U V^T + E
-#' X <- tcrossprod(U, V) + 15 * rnorm(N * M)
-#' pca <- prcomp(X)
-#' eigval <- pca$sdev^2
-#' plot(head(eigval, -1), log = "xy", pch = 20)
-#' pca_nspike(eigval)
-#'
-pca_nspike <- function(eigval, breaks = "FD", nboot = 100) {
-  lim_up <- hist_out(eigval, breaks = "FD", nboot = nboot)$lim[2]
-  sum(eigval > lim_up)
-}
-
-################################################################################
-
 #' OADP projection
 #'
 #' Online Augmentation, Decomposition, and Procrustes (OADP) projection of

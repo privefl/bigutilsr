@@ -11,17 +11,13 @@ svd <- svd(X[ind, ])
 # hist(svd$d[svd$d < 80]^2, breaks = nclass.scottRob)
 
 expect_equal(U0 <- sweep(svd$u, 2, svd$d, '*'), X[ind, ] %*% svd$v)
-U1 <- X[-ind, ] %*% svd$v
 
-proj <- pca_OADP_proj(X[-ind, ], loadings = svd$v[, 1:5], sval = svd$d)
+X.new <- X[-ind, ]
+U1 <- X.new %*% svd$v
+
+proj <- pca_OADP_proj(X.new, loadings = svd$v[, 1:5], sval = svd$d)
 expect_equal(proj$simple_proj, U1[, 1:5])
 U3 <- proj$OADP_proj
-
-# col <- 2:3
-# plot(U0[, col])
-# points(U1[, col], col = "red", pch = 20)
-# points(U2[, col], col = "blue", pch = 20)
-# points(U3[, col], col = "green", pch = 20)
 
 ref   <- by(U0[, 1:3], pop[ind],  colMeans)
 pred1 <- by(U1[, 1:3], pop[-ind], colMeans)
@@ -29,6 +25,39 @@ pred3 <- by(U3[, 1:3], pop[-ind], colMeans)
 lapply(seq_along(ref), function(k) {
   expect_lt(crossprod(ref[[k]] - pred3[[k]]), crossprod(ref[[k]] - pred1[[k]]))
 })
+
+
+# Augmentation, Decomposition and Procrustes (ADP) transformation
+PC.ref <- U0[, 1:3]
+X.aug <- rbind(0, X[ind, ])
+
+U4 <- t(sapply(1:nrow(X.new), function(i) {
+  # print(i)
+  X.aug[1, ] <<- X.new[i, ]
+  svd.aug <- RSpectra::svds(X.aug, k = 3, nv = 0)
+  PC.aug <- sweep(svd.aug$u, 2, svd.aug$d, '*')
+  proc <- procrustes(PC.ref, PC.aug[-1, ])
+  predict(proc, PC.aug[1, , drop = FALSE])
+}))
+expect_equal(U4, U3[, 1:3], tolerance = 1e-2)
+
+U5 <- t(sapply(1:nrow(X.new), function(i) {
+  # print(i)
+  X.aug[1, ] <<- X.new[i, ]
+  svd.aug <- RSpectra::svds(X.aug, k = 6, nv = 0)
+  PC.aug <- sweep(svd.aug$u, 2, svd.aug$d, '*')
+  proc <- procrustes(PC.ref, PC.aug[-1, ])
+  predict(proc, PC.aug[1, , drop = FALSE])[1:3]
+}))
+expect_equal(U5, U3[, 1:3], tolerance = 1e-3)
+
+# col <- 2:3
+# plot(U0[, col])
+# points(U1[, col], col = "red", pch = 20)
+# points(U2[, col], col = "blue", pch = 20)
+# points(U3[, col], col = "green", pch = 20)
+# points(U4[, col], col = "orange", pch = 20)
+# points(U5[, col], col = "purple", pch = 20)
 
 
 #### Second example ####

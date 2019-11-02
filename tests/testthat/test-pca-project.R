@@ -19,12 +19,17 @@ proj <- pca_OADP_proj(X.new, loadings = svd$v[, 1:5], sval = svd$d)
 expect_equal(proj$simple_proj, U1[, 1:5])
 U3 <- proj$OADP_proj
 
-ref   <- by(U0[, 1:3], pop[ind],  colMeans)
-pred1 <- by(U1[, 1:3], pop[-ind], colMeans)
-pred3 <- by(U3[, 1:3], pop[-ind], colMeans)
-lapply(seq_along(ref), function(k) {
-  expect_lt(crossprod(ref[[k]] - pred3[[k]]), crossprod(ref[[k]] - pred1[[k]]))
+all_maha <- by(U0[, 2:3], pop[ind], function(x) covRob(x, estim = "pairwiseGK"))
+pred1 <- lapply(seq_along(all_maha), function(k) {
+  maha <- all_maha[[k]]
+  stats::mahalanobis(U1[pop[-ind] == k, 2:3], center = maha$center, cov = maha$cov)
 })
+pred3 <- lapply(seq_along(all_maha), function(k) {
+  maha <- all_maha[[k]]
+  stats::mahalanobis(U3[pop[-ind] == k, 2:3], center = maha$center, cov = maha$cov)
+})
+expect_gt(ks.test(pchisq(unlist(pred3), df = 2, lower.tail = TRUE), "punif")$p.value,
+          ks.test(pchisq(unlist(pred1), df = 2, lower.tail = TRUE), "punif")$p.value)
 
 
 # Augmentation, Decomposition and Procrustes (ADP) transformation
@@ -51,7 +56,7 @@ U5 <- t(sapply(1:nrow(X.new), function(i) {
 }))
 expect_equal(U5, U3[, 1:3], tolerance = 1e-3)
 
-# col <- 2:3
+# col <- 1:2
 # plot(U0[, col])
 # points(U1[, col], col = "red", pch = 20)
 # points(U2[, col], col = "blue", pch = 20)

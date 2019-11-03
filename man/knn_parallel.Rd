@@ -37,6 +37,6 @@ A list with elements \code{nn.idx} (1-indexed indices) and
 Find K nearest neighbours for multiple query points
 }
 \examples{
-knn_parallel(matrix(1:4, 2), k = 2)
+knn_parallel(matrix(1:4, 2), k = 2, ncores = 2)
 
 }

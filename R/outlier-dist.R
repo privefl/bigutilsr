@@ -1,11 +1,5 @@
 ################################################################################
 
-#' @importFrom robust covRob
-#' @export
-robust::covRob
-
-################################################################################
-
 #' Transform matrix
 #'
 #' Transform matrix to use Mahalanobis distance instead of Euclidean one.
@@ -17,9 +11,9 @@ robust::covRob
 #'
 #' @examples
 #' X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
-#' svd <- svd(scale(X))
+#' svd <- svds(scale(X), k = 5)
 #'
-#' U <- svd$u[, 1:5]
+#' U <- svd$u
 #' dist1 <- covRob(U, estim = "pairwiseGK")$dist
 #'
 #' U.maha <- to_maha(U)
@@ -68,17 +62,17 @@ to_maha <- function(U) {
 #'
 #' @examples
 #' X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
-#' svd <- svd(scale(X))
+#' svd <- svds(scale(X), k = 10)
 #'
-#' llof <- LOF(svd$u[, 1:10])
+#' llof <- LOF(svd$u)
 #' hist(llof, breaks = nclass.scottRob)
 #' tukey_mc_up(llof)
 #'
-#' llof_maha <- LOF(svd$u[, 1:10], robMaha = TRUE)
+#' llof_maha <- LOF(svd$u, robMaha = TRUE)
 #' hist(llof_maha, breaks = nclass.scottRob)
 #' tukey_mc_up(llof_maha)
 #'
-#' lof <- LOF(svd$u[, 1:10], log = FALSE)
+#' lof <- LOF(svd$u, log = FALSE)
 #' hist(lof, breaks = nclass.scottRob)
 #' str(hist_out(lof))
 #' str(hist_out(lof, nboot = 100))
@@ -129,8 +123,8 @@ LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
 #'
 #' @examples
 #' X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
-#' svd <- svd(scale(X))
-#' U <- svd$u[, 1:10]
+#' svd <- svds(scale(X), k = 10)
+#' U <- svd$u
 #'
 #' test <- prob_dist(U)
 #' plof <- test$dist.self / test$dist.nn

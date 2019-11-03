@@ -21,8 +21,8 @@ Probabilistic set distance
 }
 \examples{
 X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
-svd <- svd(scale(X))
-U <- svd$u[, 1:10]
+svd <- svds(scale(X), k = 10)
+U <- svd$u
 
 test <- prob_dist(U)
 plof <- test$dist.self / test$dist.nn

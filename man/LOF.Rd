@@ -28,17 +28,17 @@ LOF: Identifying Density-Based Local Outliers.
 }
 \examples{
 X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
-svd <- svd(scale(X))
+svd <- svds(scale(X), k = 10)
 
-llof <- LOF(svd$u[, 1:10])
+llof <- LOF(svd$u)
 hist(llof, breaks = nclass.scottRob)
 tukey_mc_up(llof)
 
-llof_maha <- LOF(svd$u[, 1:10], robMaha = TRUE)
+llof_maha <- LOF(svd$u, robMaha = TRUE)
 hist(llof_maha, breaks = nclass.scottRob)
 tukey_mc_up(llof_maha)
 
-lof <- LOF(svd$u[, 1:10], log = FALSE)
+lof <- LOF(svd$u, log = FALSE)
 hist(lof, breaks = nclass.scottRob)
 str(hist_out(lof))
 str(hist_out(lof, nboot = 100))

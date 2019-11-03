@@ -6,7 +6,7 @@ pop <- rep(1:3, c(143, 167, 207))
 
 N <- 300; M <- ncol(X)
 ind <- sample(nrow(X), N)
-svd <- svd(X[ind, ])
+svd <- svds(X[ind, ], k = 10)
 # plot(svd$d^2, log = "xy")
 # hist(svd$d[svd$d < 80]^2, breaks = nclass.scottRob)
 
@@ -39,7 +39,7 @@ X.aug <- rbind(0, X[ind, ])
 U4 <- t(sapply(1:nrow(X.new), function(i) {
   # print(i)
   X.aug[1, ] <<- X.new[i, ]
-  svd.aug <- RSpectra::svds(X.aug, k = 3, nv = 0)
+  svd.aug <- svds(X.aug, k = 3, nv = 0)
   PC.aug <- sweep(svd.aug$u, 2, svd.aug$d, '*')
   proc <- procrustes(PC.ref, PC.aug[-1, ])
   predict(proc, PC.aug[1, , drop = FALSE])
@@ -49,7 +49,7 @@ expect_equal(U4, U3[, 1:3], tolerance = 1e-2)
 U5 <- t(sapply(1:nrow(X.new), function(i) {
   # print(i)
   X.aug[1, ] <<- X.new[i, ]
-  svd.aug <- RSpectra::svds(X.aug, k = 6, nv = 0)
+  svd.aug <- svds(X.aug, k = 6, nv = 0)
   PC.aug <- sweep(svd.aug$u, 2, svd.aug$d, '*')
   proc <- procrustes(PC.ref, PC.aug[-1, ])
   predict(proc, PC.aug[1, , drop = FALSE])[1:3]

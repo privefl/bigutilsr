@@ -40,14 +40,16 @@ PC loadings onto some study data \code{X}.
 X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
 N <- 400; M <- ncol(X)
 ind <- sample(nrow(X), N)
+
 # Compute SVD using one part of samples
-svd <- svd(X[ind, ])
+svd <- svds(X[ind, ], k = 5)
 U <- sweep(svd$u, 2, svd$d, '*')
 col <- 2:3
 plot(U[, col])
 points(cbind(0, 0), pch = 8, col = "green", cex = 2)
+
 # Projecting other samples
-proj <- pca_OADP_proj(X = X[-ind, ], loadings = svd$v[, 1:5], sval = svd$d)
+proj <- pca_OADP_proj(X = X[-ind, ], loadings = svd$v, sval = svd$d)
 points(proj$simple_proj[, col], col = "red", pch = 20)     # shrunk towards 0
 points(proj$OADP_proj[, col], col = "blue", pch = 20)      # unshrunk
 

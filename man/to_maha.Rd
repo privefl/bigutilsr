@@ -17,9 +17,9 @@ Transform matrix to use Mahalanobis distance instead of Euclidean one.
 }
 \examples{
 X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
-svd <- svd(scale(X))
+svd <- svds(scale(X), k = 5)
 
-U <- svd$u[, 1:5]
+U <- svd$u
 dist1 <- covRob(U, estim = "pairwiseGK")$dist
 
 U.maha <- to_maha(U)

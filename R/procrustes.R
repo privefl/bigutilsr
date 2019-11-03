@@ -14,16 +14,16 @@ get_procrustes <- function(Y, X) {
   rho <- sum(svd$d) / F_norm2(X.centered)
   R <- tcrossprod(svd$v, svd$u)
   structure(list(R = R, rho = rho, c = colMeans(Y) - crossprod(rho * X_mean, R)),
-            class = "procrustes")
+            class = "Procrustes")
 }
 
 ################################################################################
 
 #' Predict method
 #'
-#' Predict method for class `procrustes`.
+#' Predict method for class `Procrustes`.
 #'
-#' @param object Object of class `procrustes`.
+#' @param object Object of class `Procrustes`.
 #' @param X New matrix to transform.
 #' @param ... Not used.
 #'
@@ -34,7 +34,7 @@ get_procrustes <- function(Y, X) {
 #'
 #' @seealso [procrustes()].
 #'
-predict.procrustes <- function(object, X, ...) {
+predict.Procrustes <- function(object, X, ...) {
   sweep(X %*% (object$rho * object$R), 2, object$c, '+')
 }
 

@@ -12,8 +12,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{robust}{\code{\link[robust]{covRob}}}
-
   \item{RSpectra}{\code{\link[RSpectra]{svds}}}
+
+  \item{robust}{\code{\link[robust]{covRob}}}
 }}
 

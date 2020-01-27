@@ -7,7 +7,7 @@
 #' @export
 #'
 #' @examples
-#' knn_parallel(matrix(1:4, 2), k = 2, ncores = 2)
+#' \dontrun{knn_parallel(matrix(1:4, 2), k = 2, ncores = 2)}
 #'
 knn_parallel <- function(data, query = data, k, ...,
                          ncores = bigparallelr::nb_cores()) {

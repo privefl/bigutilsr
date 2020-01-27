@@ -19,14 +19,19 @@ all.equal(true[c("cov", "center", "dist")], test[c("cov", "center", "dist")],
 
 
 Rcpp::sourceCpp("tmp-tests/ogk.cpp")
-test2 <- covRob_ogk_rcpp(mat2)
+covRob_ogk_r <- function(X) {
+  res <- covRob_ogk_rcpp(X)
+  res$dist <- stats::mahalanobis(X, res$center, res$cov)
+  res
+}
+test2 <- covRob_ogk_r(mat2)
 all.equal(true[c("cov", "center", "dist")], test2[c("cov", "center", "dist")],
           check.attributes = FALSE)
 
 microbenchmark::microbenchmark(
   # ROB = robust::covRob(mat2, estim = "pairwiseGK"),
   LUU = covRob_rcpp(mat2),
-  LUU2 = covRob_ogk_rcpp(mat2),
+  LUU2 = covRob_ogk_r(mat2),
   times = 10
 )
 # Unit: milliseconds

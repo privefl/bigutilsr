@@ -164,27 +164,6 @@ Rcpp::List ogk_step_rcpp(NumericMatrix &x) {
 
   return Rcpp::List::create(Rcpp::Named("V") = V,
                             Rcpp::Named("A") = A);
-
-}
-
-Eigen::VectorXd getDistance_rcpp(NumericMatrix &x,
-                                 NumericVector &center,
-                                 NumericMatrix &cov) {
-
-  int n = x.nrow();
-  int p = x.ncol();
-  Eigen::MatrixXd x_cen(n, p);
-  Eigen::Map<Eigen::MatrixXd> covEigen(Rcpp::as< Eigen::Map<Eigen::MatrixXd> > (cov));
-  for (int i = 0; i < n; i++) {
-    for (int j = 0; j < p; j++) {
-      x_cen(i, j) = x(i, j) - center[j];
-    }
-  }
-
-  Eigen::VectorXd res = (x_cen * covEigen.inverse()).cwiseProduct(x_cen).rowwise().sum();
-
-  return res;
-
 }
 
 // [[Rcpp::export]]
@@ -228,7 +207,6 @@ Rcpp::List covRob_ogk_rcpp(NumericMatrix &x){
 
   NumericVector wcenter(p);
   NumericMatrix wcov(p, p);
-  NumericVector wdist(n);
 
   for (int i = 0; i < n; i++) {
     if (d[i] < qq){
@@ -254,6 +232,5 @@ Rcpp::List covRob_ogk_rcpp(NumericMatrix &x){
     }
   }
 
-  wdist = getDistance_rcpp(x, wcenter, wcov);
-  return List::create(_["cov"] = wcov, _["center"] = wcenter, _["dist"] = wdist);
+  return List::create(_["cov"] = wcov, _["center"] = wcenter);
 }

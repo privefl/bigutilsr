@@ -9,7 +9,7 @@ prob_dist(U, kNN = 5, robMaha = FALSE, ncores = 1)
 \arguments{
 \item{U}{A matrix, from which to detect outliers (rows). E.g. PC scores.}
 
-\item{kNN}{Number of nearest neighbours to use. Default is \code{5}.}
+\item{kNN}{Number of nearest neighbors to use. Default is \code{5}.}
 
 \item{robMaha}{Whether to use a robust Mahalanobis distance instead of the
 normal euclidean distance? Default is \code{FALSE}, meaning using euclidean.}

@@ -16,10 +16,10 @@ after adjusting for multiple testing. A standard value to use is \code{1.5}.}
 \item{alpha}{See \code{coef}. Default is \code{0.05}.}
 
 \item{a}{scaling factors multiplied by the medcouple
-    \code{\link{mc}()} to determine outlyer boundaries; see the references.}
+    \code{\link[robustbase]{mc}()} to determine outlyer boundaries; see the references.}
 
 \item{b}{scaling factors multiplied by the medcouple
-    \code{\link{mc}()} to determine outlyer boundaries; see the references.}
+    \code{\link[robustbase]{mc}()} to determine outlyer boundaries; see the references.}
 }
 \description{
 Outlier detection threshold (upper) based on Tukey's rule, corrected for

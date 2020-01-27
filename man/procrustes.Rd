@@ -18,10 +18,10 @@ procrustes(Y, X, n_iter_max = 1000, epsilon_min = 1e-07)
 \value{
 Object of class "procrustes", a list with the following elements:
 \itemize{
-\item \code{$R}: the rotation matrix to apply to \code{X},
-\item \code{$rho}: the scaling coefficient to apply to \code{X},
-\item \code{$c}: the column centering to apply to the resulting matrix,
-\item \code{$diff}: the average difference between \code{Y} and \code{X} transformed.
+\item \verb{$R}: the rotation matrix to apply to \code{X},
+\item \verb{$rho}: the scaling coefficient to apply to \code{X},
+\item \verb{$c}: the column centering to apply to the resulting matrix,
+\item \verb{$diff}: the average difference between \code{Y} and \code{X} transformed.
 }
 
 You can use method \code{predict()} to apply this transformation to other data.

@@ -43,7 +43,7 @@ to_maha <- function(U) {
 #' LOF: Identifying Density-Based Local Outliers.
 #'
 #' @param U A matrix, from which to detect outliers (rows). E.g. PC scores.
-#' @param seq_k Sequence of numbers of nearest neighbours to use.
+#' @param seq_k Sequence of numbers of nearest neighbors to use.
 #'   If multiple `k` are provided, this returns the combination of statistics.
 #'   Default is `c(4, 10, 30)` and use `max` to combine (see `combine`).
 #' @param combine How to combine results for multiple `k`? Default uses `max`.
@@ -111,7 +111,7 @@ LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
 #' Probabilistic set distance
 #'
 #' @inheritParams LOF
-#' @param kNN Number of nearest neighbours to use. Default is `5`.
+#' @param kNN Number of nearest neighbors to use. Default is `5`.
 #'
 #' @seealso [LOF()] [to_maha()]
 #'

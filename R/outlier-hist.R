@@ -40,7 +40,7 @@ nclass.scottRob <- function(x) {
 #'
 #' @return A list with
 #' - `x`: the initial vector, whose outliers have been removed,
-#' - `lim`: lower and upper limits for outlier remova,
+#' - `lim`: lower and upper limits for outlier removal,
 #' - `all_lim`: all bootstrap replicates for `lim` (if `nboot` not `NULL`).
 #' @export
 #'

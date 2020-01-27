@@ -22,7 +22,7 @@ Default is \code{NULL} (no bootstrap, even if \strong{I would recommend to use i
 A list with
 \itemize{
 \item \code{x}: the initial vector, whose outliers have been removed,
-\item \code{lim}: lower and upper limits for outlier remova,
+\item \code{lim}: lower and upper limits for outlier removal,
 \item \code{all_lim}: all bootstrap replicates for \code{lim} (if \code{nboot} not \code{NULL}).
 }
 }

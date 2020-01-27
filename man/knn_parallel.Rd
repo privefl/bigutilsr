@@ -4,8 +4,7 @@
 \alias{knn_parallel}
 \title{Find K nearest neighbours for multiple query points}
 \usage{
-knn_parallel(data, query = data, k, ...,
-  ncores = bigparallelr::nb_cores())
+knn_parallel(data, query = data, k, ..., ncores = bigparallelr::nb_cores())
 }
 \arguments{
 \item{data}{Mxd matrix of M target points with dimension d}
@@ -16,15 +15,16 @@ and \code{query} must have same dimension). If missing defaults to
 
 \item{k}{an integer number of nearest neighbours to find}
 
-\item{...}{Arguments passed on to \code{nabor::knn}
-\describe{
-  \item{eps}{An approximate error bound. The default of 0 implies exact 
+\item{...}{
+  Arguments passed on to \code{\link[nabor:knn]{nabor::knn}}
+  \describe{
+    \item{\code{eps}}{An approximate error bound. The default of 0 implies exact 
 matching.}
-  \item{searchtype}{A character vector or integer indicating the search type. 
+    \item{\code{searchtype}}{A character vector or integer indicating the search type. 
 The default value of \code{1L} is equivalent to "auto". See details.}
-  \item{radius}{Maximum radius search bound. The default of 0 implies no radius
+    \item{\code{radius}}{Maximum radius search bound. The default of 0 implies no radius
 bound.}
-}}
+  }}
 
 \item{ncores}{Number of cores to use. Default uses \code{\link[bigparallelr:nb_cores]{bigparallelr::nb_cores()}}.}
 }

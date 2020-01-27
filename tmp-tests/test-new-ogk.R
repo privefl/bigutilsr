@@ -19,27 +19,48 @@ all.equal(true[c("cov", "center", "dist")], test[c("cov", "center", "dist")],
 
 
 Rcpp::sourceCpp("tmp-tests/ogk.cpp")
+all.equal(test_qchisq(0.77, 2), qchisq(0.77, 2))
+all.equal(test_qchisq(0.17, 8.77), qchisq(0.17, 8.77))
 
 ogk_step_r <- function(X) {
+
+  p <- ncol(X)
+  U <- matrix(1, p, p)
+  X.col.scaled <- list()
   sigma0 <- scaleTau2_matrix_rcpp(X)$sigma0
-  U <- ogk_step_rcpp(sweep(X, 2, sigma0, '/'))
+
+  for (j in seq_len(p)) {
+    X.col.scaled[[j]] <- X[, j] / sigma0[j]
+    for (k in seq_len(j - 1)) {
+      U[j, k] <- U[k, j] <- covGK_rcpp(X.col.scaled[[j]], X.col.scaled[[k]]);
+    }
+  }
+
   eigvec <- eigen(U, symmetric = TRUE)$vectors
   X %*% sweep(eigvec, 1, sigma0, '/')
 }
 
-covRob_ogk_r <- function(X) {
+covRob_ogk_r <- function(X, beta = 0.9) {
 
   # First iteration
   V <- ogk_step_r(X)
 
   # Second iteration
   Z <- ogk_step_r(V)
-  res <- covRob_ogk_rcpp(X, Z)
 
-  # Distance computation
-  res$dist <- stats::mahalanobis(X, res$center, res$cov)
+  musigma0 <- scaleTau2_matrix_rcpp(Z);
+  Z_scaled <- scale(Z, center = musigma0$mu, scale = musigma0$sigma0)
+  d <- rowSums(Z_scaled ** 2)
 
-  res
+  df <- ncol(X)
+  cdelta <- median(d) / qchisq(0.5, df)
+  quantile <- qchisq(beta, df)
+
+  X.in <- X[d < (quantile * cdelta), ]
+  wcenter <- colMeans(X.in)
+  wcov <- crossprod(sweep(X.in, 2, wcenter, '-')) / nrow(X.in)
+
+  list(cov = wcov, center = wcenter, dist = stats::mahalanobis(X, wcenter, wcov))
 }
 test2 <- covRob_ogk_r(mat2)
 all.equal(true[c("cov", "center", "dist")], test2[c("cov", "center", "dist")],

@@ -68,6 +68,7 @@ List scaleTau2_matrix_rcpp(const NumericMatrix& x) {
 
 /******************************************************************************/
 
+// [[Rcpp::export]]
 double covGK_rcpp(const NumericVector& x, const NumericVector& y){
   double sigma0_sum  = scaleTau2_vector_rcpp(x + y)[1];
   double sigma0_diff = scaleTau2_vector_rcpp(x - y)[1];
@@ -77,82 +78,6 @@ double covGK_rcpp(const NumericVector& x, const NumericVector& y){
 /******************************************************************************/
 
 // [[Rcpp::export]]
-NumericMatrix ogk_step_rcpp(const NumericMatrix& x_scaled) {
-
-  int p = x_scaled.ncol();
-  NumericMatrix U(p, p);
-
-  for (int i = 0; i < p; i++) {
-    NumericVector col_i = x_scaled.column(i);
-    for (int j = 0; j < i; j++) {
-      NumericVector col_j = x_scaled.column(j);
-      U(j, i) = U(i, j) = covGK_rcpp(col_i, col_j);
-    }
-    U(i, i) = 1.0;
-  }
-
-  return U;
+double test_qchisq(double x, double df) {
+  return ::Rf_qchisq(x, df, 1, 0);
 }
-
-/******************************************************************************/
-
-// [[Rcpp::export]]
-List covRob_ogk_rcpp(const NumericMatrix& x, NumericMatrix& Z) {
-
-  int n = x.nrow();
-  int p = x.ncol();
-  double df = (double) p;
-
-  List musigma = scaleTau2_matrix_rcpp(Z);
-  NumericVector mu     = musigma[0];
-  NumericVector sigma0 = musigma[1];
-  NumericVector d(n);
-
-  for (int j = 0; j < p; j++) {
-    for (int i = 0; i < n; i++) {
-      Z(i, j) -= mu[j];
-      Z(i, j) /= sigma0[j];
-      d[i] += square(Z(i, j));
-    }
-  }
-
-  double cdelta = Rcpp::median(d) / ::Rf_qchisq(0.5, df, 1, 0);
-  double beta = 0.9;
-  double quantile = ::Rf_qchisq(beta, df, 1, 0);
-  double qq = quantile * cdelta;
-
-  NumericVector wcenter(p);
-  IntegerVector wt(n);
-  double sum_wt = 0;
-
-  for (int i = 0; i < n; i++) {
-    if (d[i] < qq){
-      wt[i] = 1;
-      sum_wt += 1;
-      for (int j = 0; j < p; j++) {
-        wcenter[j] += x.at(i, j);
-      }
-    }
-  }
-  for (int j = 0; j < p; j++) {
-    wcenter[j] /= sum_wt;
-  }
-
-  NumericMatrix wcov(p, p);
-
-  for (int i = 0; i < p; i ++){
-    for (int j = i; j < p; j++){
-      for (int k = 0; k < n; k++){
-        if (wt[k] == 1){
-          wcov.at(i, j) += (x.at(k, i) - wcenter[i]) * (x.at(k, j) - wcenter[j]);
-        }
-      }
-      wcov.at(i, j) /= sum_wt;
-      wcov.at(j, i) = wcov.at(i, j);
-    }
-  }
-
-  return List::create(_["cov"] = wcov, _["center"] = wcenter);
-}
-
-/******************************************************************************/

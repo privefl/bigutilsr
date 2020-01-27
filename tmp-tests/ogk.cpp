@@ -9,28 +9,27 @@ using namespace Rcpp;
 static const double c1 = 4.5;
 static const double c2 = 3.0;
 static const double c3 = 0.92471539217613152;
+static const double c4 = 9.0;
 
 inline double square(double x) { return x * x; }
 
 /******************************************************************************/
 
 NumericVector scaleTau2_vector_rcpp(const NumericVector& x) {
+
   int n = x.size();
-  double medx;
-  double sigma0;
-  medx = median(x);
-  NumericVector xvec(n);
-  NumericVector rho(n);
+  NumericVector x_dev(n);
+  double medx = Rcpp::median(x);
+  for (int i = 0; i < n; i++) {
+    x_dev[i] = std::abs(x[i] - medx);
+  }
+
+  double sigma0 = Rcpp::median(x_dev);  // basically, MAD(x) (without constant)
+  double sigma0_c1 = sigma0 * c1;
   double mu = 0;
   double w_tot = 0;
-  double sum_rho = 0;
   for (int i = 0; i < n; i++) {
-    xvec[i] = std::abs(x[i] - medx);
-  }
-  sigma0 = median(xvec);
-  for (int i = 0; i < n; i++) {
-    xvec[i] /= (sigma0 * c1);
-    double w_i = 1 - square(xvec[i]);
+    double w_i = 1 - square(x_dev[i] / sigma0_c1);
     if (w_i > 0) {
       w_i *= w_i;
       mu += x[i] * w_i;
@@ -38,17 +37,15 @@ NumericVector scaleTau2_vector_rcpp(const NumericVector& x) {
     }
   }
   mu /= w_tot;
+
+  double sum_rho = 0;
   for (int i = 0; i < n; i++) {
-    double tmp = square((x[i] - mu) / sigma0);
-    if (tmp > (c2 * c2)) {
-      rho[i] = c2 * c2;
-    } else {
-      rho[i] = tmp;
-    }
-    sum_rho += rho[i];
+    double x_i_scaled = (x[i] - mu) / sigma0;
+    sum_rho += std::min(square(x_i_scaled), c4);
   }
   sigma0 *= ::sqrt(sum_rho / (n * c3));
-  return NumericVector::create(mu, sigma0);;
+
+  return NumericVector::create(mu, sigma0);
 }
 
 /******************************************************************************/
@@ -83,9 +80,9 @@ double covGK_rcpp(const NumericVector& x, const NumericVector& y){
 // [[Rcpp::export]]
 List ogk_step_rcpp(const NumericMatrix& x) {
 
+  NumericVector sigma0 = scaleTau2_matrix_rcpp(x)[1];
+
   int p = x.ncol();
-  List ms = scaleTau2_matrix_rcpp(x);
-  NumericVector sigma0 = ms[1];
   NumericMatrix U(p, p);
   for (int i = 0; i < p; i++) {
     for (int j = i; j < p; j++) {

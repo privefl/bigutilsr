@@ -46,11 +46,11 @@ all.equal(true[c("cov", "center", "dist")], test2[c("cov", "center", "dist")],
 
 microbenchmark::microbenchmark(
   # ROB = robust::covRob(mat2, estim = "pairwiseGK"),
-  LUU = covRob_rcpp(mat2),
-  LUU2 = covRob_ogk_r(mat2),
+  KL = covRob_rcpp(mat2),
+  FP = covRob_ogk_r(mat2),
   times = 15
 )
 # Unit: milliseconds
 # expr      min       lq     mean   median       uq      max neval
 #  ROB 676.8654 677.9064 683.2131 681.0307 684.9266 696.8045    10
-#  LUU 231.3390 233.4321 234.8431 234.5108 235.5153 240.4946    10
+#   KL 231.3390 233.4321 234.8431 234.5108 235.5153 240.4946    10

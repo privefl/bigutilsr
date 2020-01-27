@@ -13,13 +13,17 @@ using Eigen::SelfAdjointEigenSolver;
 using namespace Rcpp;
 using namespace Eigen;
 
+static const double c1 = 4.5;
+static const double c2 = 3.0;
+static const double c3 = 0.92471539217613152;
+
 // [[Rcpp::export]]
 NumericVector colMedian_rcpp(NumericMatrix &x) {
   int p = x.ncol();
   NumericVector out(p);
   for (int j = 0; j < p; j++) {
     NumericVector tmp(x(_, j));
-    out[j] = median(tmp);
+    out[j] = Rcpp::median(tmp);
   }
   return out;
 }
@@ -40,35 +44,16 @@ NumericVector colMedian_rcpp2(const NumericMatrix& x) {
   return out;
 }
 
-
-inline double Erho_rcpp(double b) {
-  double pb = ::Rf_pnorm5(b, 0.0, 1.0, 1, 0);
-  double db = ::Rf_dnorm4(b, 0.0, 1.0, 0);
-  return 2 * ((1 - b * b) * pb - b * db + b * b) - 1;
-}
-
-inline double Es2_rcpp(double c) {
-  double q = ::Rf_qnorm5(0.75, 0.0, 1.0, 1, 0);
-  return Erho_rcpp(c * q);
-}
-
 Rcpp::List scaleTau2_matrix_rcpp(NumericMatrix &x){
   int n = x.nrow();
   int p = x.ncol();
-  double c1 = 4.5;
-  double c2 = 3.0;
-  double nEs2;
   NumericVector medx(p);
   NumericVector sigma0(p);
   medx = colMedian_rcpp(x);
   NumericVector xvec(n);
   NumericVector rho(n);
-  NumericVector w(n);
   NumericVector muvec(p);
-  double mu;
-  double w_tot;
-  double sum_rho;
-  double tmp;
+  double mu, w_tot, sum_rho, tmp;
   for (int j = 0; j < p; j++) {
     mu = 0;
     w_tot = 0;
@@ -79,10 +64,12 @@ Rcpp::List scaleTau2_matrix_rcpp(NumericMatrix &x){
     sigma0[j] = Rcpp::median(xvec);
     for (int i = 0; i < n; i++) {
       xvec[i] /= (sigma0[j] * c1);
-      w[i] = 1 - (xvec[i] * xvec[i]);
-      w[i] = (std::abs(w[i]) + w[i]) * (std::abs(w[i]) + w[i]) / 4;
-      mu += x(i, j) * w[i];
-      w_tot += w[i];
+      double w_i = 1 - (xvec[i] * xvec[i]);
+      if (w_i > 0) {
+        w_i *= w_i;
+        mu += x(i, j) * w_i;
+        w_tot += w_i;
+      }
     }
     muvec[j] = mu / w_tot;
     for (int i = 0; i < n; i++) {
@@ -94,41 +81,34 @@ Rcpp::List scaleTau2_matrix_rcpp(NumericMatrix &x){
       }
       sum_rho += rho[i];
     }
-    nEs2 = n * Es2_rcpp(c2);
-    sigma0[j] *= sqrt(sum_rho / nEs2);
+    sigma0[j] *= ::sqrt(sum_rho / (n * c3));
   }
-  return Rcpp::List::create(Rcpp::Named("mu") = muvec,
-                            Rcpp::Named("sigma0") = sigma0);
+  return List::create(_["mu"] = muvec, _["sigma0"] = sigma0);
 }
 
 NumericVector scaleTau2_vector_rcpp(NumericVector &x) {
   int n = x.size();
-  double c1 = 4.5;
-  double c2 = 3.0;
-  double nEs2;
   double medx;
   double sigma0;
   medx = median(x);
   NumericVector xvec(n);
   NumericVector rho(n);
-  NumericVector w(n);
-  double mu;
-  double w_tot;
-  double sum_rho;
+  double mu = 0;
+  double w_tot = 0;
+  double sum_rho = 0;
   double tmp;
-  mu = 0;
-  w_tot = 0;
-  sum_rho = 0;
   for (int i = 0; i < n; i++) {
     xvec[i] = std::abs(x[i] - medx);
   }
   sigma0 = median(xvec);
   for (int i = 0; i < n; i++) {
     xvec[i] /= (sigma0 * c1);
-    w[i] = 1 - (xvec[i] * xvec[i]);
-    w[i] = (std::abs(w[i]) + w[i]) * (std::abs(w[i]) + w[i]) / 4;
-    mu += x[i] * w[i];
-    w_tot += w[i];
+    double w_i = 1 - (xvec[i] * xvec[i]);
+    if (w_i > 0) {
+      w_i *= w_i;
+      mu += x[i] * w_i;
+      w_tot += w_i;
+    }
   }
   mu /= w_tot;
   for (int i = 0; i < n; i++) {
@@ -140,21 +120,15 @@ NumericVector scaleTau2_vector_rcpp(NumericVector &x) {
     }
     sum_rho += rho[i];
   }
-  nEs2 = n * Es2_rcpp(c2);
-  sigma0 *= sqrt(sum_rho / nEs2);
-  NumericVector musigma(2);
-  musigma[0] = mu;
-  musigma[1] = sigma0;
-  return(musigma);
+  sigma0 *= ::sqrt(sum_rho / (n * c3));
+  return NumericVector::create(mu, sigma0);;
 }
 
-double covGK_rcpp(NumericVector &x, NumericVector &y){
-  NumericVector sum_xy = x + y;
+double covGK_rcpp(const NumericVector& x, const NumericVector& y){
+  NumericVector sum_xy  = x + y;
   NumericVector diff_xy = x - y;
-  NumericVector ms_sum;
-  NumericVector ms_diff;
-  ms_sum = scaleTau2_vector_rcpp(sum_xy);
-  ms_diff = scaleTau2_vector_rcpp(diff_xy);
+  NumericVector ms_sum  = scaleTau2_vector_rcpp(sum_xy);
+  NumericVector ms_diff = scaleTau2_vector_rcpp(diff_xy);
   return(((ms_sum[1] * ms_sum[1]) - (ms_diff[1] * ms_diff[1])) / 4);
 }
 
@@ -177,14 +151,12 @@ Rcpp::List ogk_step_rcpp(NumericMatrix &x) {
       } else {
         NumericVector tmp_i = x.column(i) / sigma0[i];
         NumericVector tmp_j = x.column(j) / sigma0[j];
-        U(i, j) = covGK_rcpp(tmp_i , tmp_j);
-        U(j, i) = U(i, j);
+        U(j, i) = U(i, j) = covGK_rcpp(tmp_i, tmp_j);
       }
     }
   }
-  NumericVector eigval;
-  Eigen::MatrixXd eigvec;
-  eigvec = getEigenValues(U);
+
+  Eigen::MatrixXd eigvec = getEigenValues(U);
   Eigen::Map<Eigen::MatrixXd> eigenX(Rcpp::as< Eigen::Map<Eigen::MatrixXd> > (x));
   Eigen::Map<Eigen::VectorXd> ms_vec(Rcpp::as< Eigen::Map<Eigen::VectorXd> > (sigma0));
   Eigen::MatrixXd A = ms_vec.asDiagonal() * eigvec;
@@ -246,12 +218,11 @@ Rcpp::List covRob_ogk_rcpp(NumericMatrix &x){
     }
   }
   medd = Rcpp::median(d);
-  double tmp = R::qchisq(0.5, df, 1, 0);
+  double tmp = ::Rf_qchisq(0.5, df, 1, 0);
   double cdelta = medd / tmp;
   double beta = 0.9;
-  double quantile = R::qchisq(beta, df, 1, 0);
-  double qq;
-  qq = quantile * cdelta;
+  double quantile = ::Rf_qchisq(beta, df, 1, 0);
+  double qq = quantile * cdelta;
   IntegerVector wt(n);
   double sum_wt = 0;
 
@@ -284,7 +255,5 @@ Rcpp::List covRob_ogk_rcpp(NumericMatrix &x){
   }
 
   wdist = getDistance_rcpp(x, wcenter, wcov);
-  return Rcpp::List::create(Rcpp::Named("cov") = wcov,
-                            Rcpp::Named("center") = wcenter,
-                            Rcpp::Named("dist") = wdist);
+  return List::create(_["cov"] = wcov, _["center"] = wcenter, _["dist"] = wdist);
 }

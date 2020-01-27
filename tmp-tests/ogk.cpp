@@ -138,7 +138,9 @@ Eigen::MatrixXd getEigenValues(NumericMatrix M) {
   return es.eigenvectors();
 }
 
-List ogk_step_rcpp(const NumericMatrix& x) {
+// [[Rcpp::export]]
+NumericMatrix ogk_step_rcpp(const NumericMatrix& x) {
+
   int p = x.ncol();
   List ms = scaleTau2_matrix_rcpp(x);
   NumericVector sigma0 = ms[1];
@@ -158,27 +160,17 @@ List ogk_step_rcpp(const NumericMatrix& x) {
   Eigen::MatrixXd eigvec = getEigenValues(U);
   Eigen::Map<Eigen::MatrixXd> eigenX(as< Eigen::Map<Eigen::MatrixXd> > (x));
   Eigen::Map<Eigen::VectorXd> ms_vec(as< Eigen::Map<Eigen::VectorXd> > (sigma0));
-  Eigen::MatrixXd A = ms_vec.asDiagonal() * eigvec;
   Eigen::MatrixXd V = eigenX * ms_vec.asDiagonal().inverse() * eigvec;
 
-  return List::create(_["V"] = V, _["A"] = A);
+  return wrap(V);
 }
 
 // [[Rcpp::export]]
-List covRob_ogk_rcpp(const NumericMatrix& x){
+List covRob_ogk_rcpp(const NumericMatrix& x, NumericMatrix& Z) {
+
   int n = x.nrow();
   int p = x.ncol();
   double df = (double) p;
-
-  /* First iteration */
-  List msva = ogk_step_rcpp(x);
-
-  NumericMatrix V = msva[0];
-  NumericMatrix A = msva[1];
-
-  /* Second iteration */
-  msva = ogk_step_rcpp(V);
-  NumericMatrix Z = msva[0];
 
   List musigma = scaleTau2_matrix_rcpp(Z);
   NumericVector mu = musigma[0];

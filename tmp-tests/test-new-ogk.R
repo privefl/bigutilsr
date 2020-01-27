@@ -20,8 +20,17 @@ all.equal(true[c("cov", "center", "dist")], test[c("cov", "center", "dist")],
 
 Rcpp::sourceCpp("tmp-tests/ogk.cpp")
 covRob_ogk_r <- function(X) {
-  res <- covRob_ogk_rcpp(X)
+
+  # First iteration
+  V <- ogk_step_rcpp(X)
+
+  # Second iteration
+  Z <- ogk_step_rcpp(V)
+  res <- covRob_ogk_rcpp(X, Z)
+
+  # Distance computation
   res$dist <- stats::mahalanobis(X, res$center, res$cov)
+
   res
 }
 test2 <- covRob_ogk_r(mat2)

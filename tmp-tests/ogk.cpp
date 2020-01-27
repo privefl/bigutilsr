@@ -18,7 +18,7 @@ static const double c2 = 3.0;
 static const double c3 = 0.92471539217613152;
 
 // [[Rcpp::export]]
-NumericVector colMedian_rcpp(NumericMatrix &x) {
+NumericVector colMedian_rcpp(const NumericMatrix& x) {
   int p = x.ncol();
   NumericVector out(p);
   for (int j = 0; j < p; j++) {
@@ -44,7 +44,7 @@ NumericVector colMedian_rcpp2(const NumericMatrix& x) {
   return out;
 }
 
-Rcpp::List scaleTau2_matrix_rcpp(NumericMatrix &x){
+List scaleTau2_matrix_rcpp(const NumericMatrix& x){
   int n = x.nrow();
   int p = x.ncol();
   NumericVector medx(p);
@@ -133,15 +133,14 @@ double covGK_rcpp(const NumericVector& x, const NumericVector& y){
 }
 
 Eigen::MatrixXd getEigenValues(NumericMatrix M) {
-  Eigen::Map<Eigen::MatrixXd> Mm(Rcpp::as< Eigen::Map<Eigen::MatrixXd> > (M));
+  Eigen::Map<Eigen::MatrixXd> Mm(as< Eigen::Map<Eigen::MatrixXd> > (M));
   SelfAdjointEigenSolver<Eigen::MatrixXd> es(Mm);
   return es.eigenvectors();
 }
 
-Rcpp::List ogk_step_rcpp(NumericMatrix &x) {
+List ogk_step_rcpp(const NumericMatrix& x) {
   int p = x.ncol();
-  Rcpp::List ms;
-  ms = scaleTau2_matrix_rcpp(x);
+  List ms = scaleTau2_matrix_rcpp(x);
   NumericVector sigma0 = ms[1];
   NumericMatrix U(p, p);
   for (int i = 0; i < p; i++) {
@@ -157,24 +156,22 @@ Rcpp::List ogk_step_rcpp(NumericMatrix &x) {
   }
 
   Eigen::MatrixXd eigvec = getEigenValues(U);
-  Eigen::Map<Eigen::MatrixXd> eigenX(Rcpp::as< Eigen::Map<Eigen::MatrixXd> > (x));
-  Eigen::Map<Eigen::VectorXd> ms_vec(Rcpp::as< Eigen::Map<Eigen::VectorXd> > (sigma0));
+  Eigen::Map<Eigen::MatrixXd> eigenX(as< Eigen::Map<Eigen::MatrixXd> > (x));
+  Eigen::Map<Eigen::VectorXd> ms_vec(as< Eigen::Map<Eigen::VectorXd> > (sigma0));
   Eigen::MatrixXd A = ms_vec.asDiagonal() * eigvec;
   Eigen::MatrixXd V = eigenX * ms_vec.asDiagonal().inverse() * eigvec;
 
-  return Rcpp::List::create(Rcpp::Named("V") = V,
-                            Rcpp::Named("A") = A);
+  return List::create(_["V"] = V, _["A"] = A);
 }
 
 // [[Rcpp::export]]
-Rcpp::List covRob_ogk_rcpp(NumericMatrix &x){
+List covRob_ogk_rcpp(const NumericMatrix& x){
   int n = x.nrow();
   int p = x.ncol();
   double df = (double) p;
 
   /* First iteration */
-  Rcpp::List msva;
-  msva = ogk_step_rcpp(x);
+  List msva = ogk_step_rcpp(x);
 
   NumericMatrix V = msva[0];
   NumericMatrix A = msva[1];
@@ -183,8 +180,7 @@ Rcpp::List covRob_ogk_rcpp(NumericMatrix &x){
   msva = ogk_step_rcpp(V);
   NumericMatrix Z = msva[0];
 
-  Rcpp::List musigma;
-  musigma = scaleTau2_matrix_rcpp(Z);
+  List musigma = scaleTau2_matrix_rcpp(Z);
   NumericVector mu = musigma[0];
   NumericVector sigma0 = musigma[1];
   NumericVector d(n);
@@ -202,11 +198,11 @@ Rcpp::List covRob_ogk_rcpp(NumericMatrix &x){
   double beta = 0.9;
   double quantile = ::Rf_qchisq(beta, df, 1, 0);
   double qq = quantile * cdelta;
-  IntegerVector wt(n);
   double sum_wt = 0;
 
-  NumericVector wcenter(p);
   NumericMatrix wcov(p, p);
+  NumericVector wcenter(p);
+  IntegerVector wt(n);
 
   for (int i = 0; i < n; i++) {
     if (d[i] < qq){

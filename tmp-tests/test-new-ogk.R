@@ -54,15 +54,3 @@ microbenchmark::microbenchmark(
 # expr      min       lq     mean   median       uq      max neval
 #  ROB 676.8654 677.9064 683.2131 681.0307 684.9266 696.8045    10
 #  LUU 231.3390 233.4321 234.8431 234.5108 235.5153 240.4946    10
-
-# microbenchmark::microbenchmark(
-#   MED = apply(mat2, 2, median),
-#   MED2 = colMedian_rcpp(mat2),
-#   MED3 = colMedian_rcpp2(mat2),
-#   times = 20
-# )
-# Unit: milliseconds
-# expr    min      lq      mean  median      uq     max neval
-#  MED 8.9783 9.23055 11.982365 9.56475 16.2671 18.3489    20
-# MED2 4.2670 4.39190  4.844825 4.46860  4.6000 11.7844    20
-# MED3 4.2349 4.31610  5.104240 4.43000  4.6205 10.8087    20

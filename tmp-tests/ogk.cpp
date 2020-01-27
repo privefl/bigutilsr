@@ -19,22 +19,6 @@ NumericVector colMedian_rcpp(const NumericMatrix& x) {
   return out;
 }
 
-// [[Rcpp::export]]
-NumericVector colMedian_rcpp2(const NumericMatrix& x) {
-  int nrow = x.nrow();
-  int ncol = x.ncol();
-  NumericVector out(ncol);
-  const double * begin = x.begin();
-  const double * end = begin + nrow;
-  for (int j = 0; j < ncol; j++) {
-    NumericVector tmp(begin, end);
-    out[j] = median(tmp);
-    begin = end;
-    end += nrow;
-  }
-  return out;
-}
-
 List scaleTau2_matrix_rcpp(const NumericMatrix& x){
   int n = x.nrow();
   int p = x.ncol();

@@ -48,7 +48,7 @@ microbenchmark::microbenchmark(
   # ROB = robust::covRob(mat2, estim = "pairwiseGK"),
   LUU = covRob_rcpp(mat2),
   LUU2 = covRob_ogk_r(mat2),
-  times = 10
+  times = 15
 )
 # Unit: milliseconds
 # expr      min       lq     mean   median       uq      max neval

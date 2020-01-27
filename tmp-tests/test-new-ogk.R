@@ -21,9 +21,10 @@ all.equal(true[c("cov", "center", "dist")], test[c("cov", "center", "dist")],
 Rcpp::sourceCpp("tmp-tests/ogk.cpp")
 
 ogk_step_r <- function(X) {
-  tmp <- ogk_step_rcpp(X)
-  eigvec <- eigen(tmp$U, symmetric = TRUE)$vectors
-  X %*% sweep(eigvec, 1, tmp$sigma0, '/')
+  sigma0 <- scaleTau2_matrix_rcpp(X)$sigma0
+  U <- ogk_step_rcpp(sweep(X, 2, sigma0, '/'))
+  eigvec <- eigen(U, symmetric = TRUE)$vectors
+  X %*% sweep(eigvec, 1, sigma0, '/')
 }
 
 covRob_ogk_r <- function(X) {

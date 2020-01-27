@@ -50,6 +50,7 @@ NumericVector scaleTau2_vector_rcpp(const NumericVector& x) {
 
 /******************************************************************************/
 
+// [[Rcpp::export]]
 List scaleTau2_matrix_rcpp(const NumericMatrix& x) {
 
   int p = x.ncol();
@@ -78,25 +79,21 @@ double covGK_rcpp(const NumericVector& x, const NumericVector& y){
 /******************************************************************************/
 
 // [[Rcpp::export]]
-List ogk_step_rcpp(const NumericMatrix& x) {
+NumericMatrix ogk_step_rcpp(const NumericMatrix& x_scaled) {
 
-  NumericVector sigma0 = scaleTau2_matrix_rcpp(x)[1];
-
-  int p = x.ncol();
+  int p = x_scaled.ncol();
   NumericMatrix U(p, p);
+
   for (int i = 0; i < p; i++) {
-    for (int j = i; j < p; j++) {
-      if (i == j) {
-        U(i, j) = 1.0;
-      } else {
-        NumericVector tmp_i = x.column(i) / sigma0[i];
-        NumericVector tmp_j = x.column(j) / sigma0[j];
-        U(j, i) = U(i, j) = covGK_rcpp(tmp_i, tmp_j);
-      }
+    NumericVector tmp_i = x_scaled.column(i);
+    for (int j = 0; j < i; j++) {
+      NumericVector tmp_j = x_scaled.column(j);
+      U(j, i) = U(i, j) = covGK_rcpp(tmp_i, tmp_j);
     }
+    U(i, i) = 1.0;
   }
 
-  return List::create(_["U"] = U, _["sigma0"] = sigma0);
+  return U;
 }
 
 /******************************************************************************/

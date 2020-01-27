@@ -2,6 +2,8 @@
 
 context("test-knn")
 
+options(bigstatsr.check.parallel.blas = FALSE)
+
 ################################################################################
 
 test_that("knn_parallel() works", {

@@ -1,4 +1,10 @@
-context("test-lof")
+################################################################################
+
+context("LOF")
+
+options(bigstatsr.check.parallel.blas = FALSE)
+
+################################################################################
 
 test_that("to_maha() works", {
 
@@ -14,6 +20,8 @@ test_that("to_maha() works", {
   expect_equal(rowSums(mat.maha^2),
                stats::mahalanobis(mat, maha$center, maha$cov))
 })
+
+################################################################################
 
 test_that("LOF() works", {
 
@@ -37,3 +45,5 @@ test_that("LOF() works", {
   llof2_maha <- LOF(svd2$u, robMaha = TRUE)
   expect_equal(which(llof2_maha > tukey_mc_up(llof2_maha)), 1:2)
 })
+
+################################################################################

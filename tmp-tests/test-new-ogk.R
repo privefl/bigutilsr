@@ -19,13 +19,20 @@ all.equal(true[c("cov", "center", "dist")], test[c("cov", "center", "dist")],
 
 
 Rcpp::sourceCpp("tmp-tests/ogk.cpp")
+
+ogk_step_r <- function(X) {
+  tmp <- ogk_step_rcpp(X)
+  eigvec <- eigen(tmp$U, symmetric = TRUE)$vectors
+  X %*% sweep(eigvec, 1, tmp$sigma0, '/')
+}
+
 covRob_ogk_r <- function(X) {
 
   # First iteration
-  V <- ogk_step_rcpp(X)
+  V <- ogk_step_r(X)
 
   # Second iteration
-  Z <- ogk_step_rcpp(V)
+  Z <- ogk_step_r(V)
   res <- covRob_ogk_rcpp(X, Z)
 
   # Distance computation

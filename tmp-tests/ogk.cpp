@@ -1,17 +1,8 @@
 // Code originally written by Keurcien Luu
 // See https://github.com/bcm-uga/pcadapt/blob/master/tmp-save/ogk.cpp
 
-#include <RcppEigen.h>
-
-// [[Rcpp::depends(RcppEigen)]]
-
-using Eigen::Map;               	      // 'maps' rather than copies
-using Eigen::MatrixXd;                  // variable size matrix, double precision
-using Eigen::VectorXd;                  // variable size vector, double precision
-using Eigen::SelfAdjointEigenSolver;
-
+#include <Rcpp.h>
 using namespace Rcpp;
-using namespace Eigen;
 
 static const double c1 = 4.5;
 static const double c2 = 3.0;
@@ -132,14 +123,8 @@ double covGK_rcpp(const NumericVector& x, const NumericVector& y){
   return(((ms_sum[1] * ms_sum[1]) - (ms_diff[1] * ms_diff[1])) / 4);
 }
 
-Eigen::MatrixXd getEigenValues(NumericMatrix M) {
-  Eigen::Map<Eigen::MatrixXd> Mm(as< Eigen::Map<Eigen::MatrixXd> > (M));
-  SelfAdjointEigenSolver<Eigen::MatrixXd> es(Mm);
-  return es.eigenvectors();
-}
-
 // [[Rcpp::export]]
-NumericMatrix ogk_step_rcpp(const NumericMatrix& x) {
+List ogk_step_rcpp(const NumericMatrix& x) {
 
   int p = x.ncol();
   List ms = scaleTau2_matrix_rcpp(x);
@@ -157,12 +142,7 @@ NumericMatrix ogk_step_rcpp(const NumericMatrix& x) {
     }
   }
 
-  Eigen::MatrixXd eigvec = getEigenValues(U);
-  Eigen::Map<Eigen::MatrixXd> eigenX(as< Eigen::Map<Eigen::MatrixXd> > (x));
-  Eigen::Map<Eigen::VectorXd> ms_vec(as< Eigen::Map<Eigen::VectorXd> > (sigma0));
-  Eigen::MatrixXd V = eigenX * ms_vec.asDiagonal().inverse() * eigvec;
-
-  return wrap(V);
+  return List::create(_["U"] = U, _["sigma0"] = sigma0);
 }
 
 // [[Rcpp::export]]

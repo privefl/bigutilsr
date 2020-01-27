@@ -57,7 +57,7 @@ List scaleTau2_matrix_rcpp(const NumericMatrix& x) {
   NumericVector mu_vec(p), sigma0_vec(p);
 
   for (int j = 0; j < p; j++) {
-    NumericVector col_j(x(_, j));
+    NumericVector col_j = x.column(j);
     NumericVector mu_sigma0_j = scaleTau2_vector_rcpp(col_j);
     mu_vec[j]     = mu_sigma0_j[0];
     sigma0_vec[j] = mu_sigma0_j[1];
@@ -69,11 +69,9 @@ List scaleTau2_matrix_rcpp(const NumericMatrix& x) {
 /******************************************************************************/
 
 double covGK_rcpp(const NumericVector& x, const NumericVector& y){
-  NumericVector sum_xy  = x + y;
-  NumericVector diff_xy = x - y;
-  NumericVector ms_sum  = scaleTau2_vector_rcpp(sum_xy);
-  NumericVector ms_diff = scaleTau2_vector_rcpp(diff_xy);
-  return (square(ms_sum[1]) - square(ms_diff[1])) / 4;
+  double sigma0_sum  = scaleTau2_vector_rcpp(x + y)[1];
+  double sigma0_diff = scaleTau2_vector_rcpp(x - y)[1];
+  return (square(sigma0_sum) - square(sigma0_diff)) / 4;
 }
 
 /******************************************************************************/
@@ -85,10 +83,10 @@ NumericMatrix ogk_step_rcpp(const NumericMatrix& x_scaled) {
   NumericMatrix U(p, p);
 
   for (int i = 0; i < p; i++) {
-    NumericVector tmp_i = x_scaled.column(i);
+    NumericVector col_i = x_scaled.column(i);
     for (int j = 0; j < i; j++) {
-      NumericVector tmp_j = x_scaled.column(j);
-      U(j, i) = U(i, j) = covGK_rcpp(tmp_i, tmp_j);
+      NumericVector col_j = x_scaled.column(j);
+      U(j, i) = U(i, j) = covGK_rcpp(col_i, col_j);
     }
     U(i, i) = 1.0;
   }

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Local Outlier Factor (LOF) — LOF • bigutilsr</title>
+<title>Probabilistic set distance — prob_dist • bigutilsr</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Local Outlier Factor (LOF) — LOF" />
-<meta property="og:description" content="LOF: Identifying Density-Based Local Outliers." />
+<meta property="og:title" content="Probabilistic set distance — prob_dist" />
+<meta property="og:description" content="Probabilistic set distance" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -105,23 +105,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Local Outlier Factor (LOF)</h1>
+    <h1>Probabilistic set distance</h1>
     <small class="dont-index">Source: <a href='https://github.com/privefl/bigutilsr/blob/master/R/outlier-dist.R'><code>R/outlier-dist.R</code></a></small>
-    <div class="hidden name"><code>LOF.Rd</code></div>
+    <div class="hidden name"><code>prob_dist.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>LOF: Identifying Density-Based Local Outliers.</p>
+    <p>Probabilistic set distance</p>
     </div>
 
-    <pre class="usage"><span class='fu'>LOF</span>(
-  <span class='no'>U</span>,
-  <span class='kw'>seq_k</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>4</span>, <span class='fl'>10</span>, <span class='fl'>30</span>),
-  <span class='kw'>combine</span> <span class='kw'>=</span> <span class='no'>max</span>,
-  <span class='kw'>robMaha</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>ncores</span> <span class='kw'>=</span> <span class='fl'>1</span>
-)</pre>
+    <pre class="usage"><span class='fu'>prob_dist</span>(<span class='no'>U</span>, <span class='kw'>kNN</span> <span class='kw'>=</span> <span class='fl'>5</span>, <span class='kw'>robMaha</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ncores</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,23 +124,13 @@
       <td><p>A matrix, from which to detect outliers (rows). E.g. PC scores.</p></td>
     </tr>
     <tr>
-      <th>seq_k</th>
-      <td><p>Sequence of numbers of nearest neighbors to use.
-If multiple <code>k</code> are provided, this returns the combination of statistics.
-Default is <code><a href='https://rdrr.io/r/base/c.html'>c(4, 10, 30)</a></code> and use <code>max</code> to combine (see <code>combine</code>).</p></td>
-    </tr>
-    <tr>
-      <th>combine</th>
-      <td><p>How to combine results for multiple <code>k</code>? Default uses <code>max</code>.</p></td>
+      <th>kNN</th>
+      <td><p>Number of nearest neighbors to use. Default is <code>5</code>.</p></td>
     </tr>
     <tr>
       <th>robMaha</th>
       <td><p>Whether to use a robust Mahalanobis distance instead of the
 normal euclidean distance? Default is <code>FALSE</code>, meaning using euclidean.</p></td>
-    </tr>
-    <tr>
-      <th>log</th>
-      <td><p>Whether to return the logarithm of LOFs? Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>ncores</th>
@@ -157,30 +140,21 @@ normal euclidean distance? Default is <code>FALSE</code>, meaning using euclidea
 
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <p>Breunig, Markus M., et al. "LOF: identifying density-based local outliers."
-ACM sigmod record. Vol. 29. No. 2. ACM, 2000.</p>
+    <p>Kriegel, Hans-Peter, et al. "LoOP: local outlier probabilities." Proceedings
+of the 18th ACM conference on Information and knowledge management. ACM, 2009.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='prob_dist.html'>prob_dist()</a></code></p></div>
+    <div class='dont-index'><p><code><a href='LOF.html'>LOF()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"testdata"</span>, <span class='st'>"three-pops.rds"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"bigutilsr"</span>))
 <span class='no'>svd</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RSpectra/man/svds.html'>svds</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/scale.html'>scale</a></span>(<span class='no'>X</span>), <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+<span class='no'>U</span> <span class='kw'>&lt;-</span> <span class='no'>svd</span>$<span class='no'>u</span>
 
-<span class='no'>llof</span> <span class='kw'>&lt;-</span> <span class='fu'>LOF</span>(<span class='no'>svd</span>$<span class='no'>u</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span>(<span class='no'>llof</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='no'>nclass.scottRob</span>)</div><div class='img'><img src='LOF-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='tukey_mc_up.html'>tukey_mc_up</a></span>(<span class='no'>llof</span>)</div><div class='output co'>#&gt; [1] 0.8646252</div><div class='input'>
-<span class='no'>llof_maha</span> <span class='kw'>&lt;-</span> <span class='fu'>LOF</span>(<span class='no'>svd</span>$<span class='no'>u</span>, <span class='kw'>robMaha</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span>(<span class='no'>llof_maha</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='no'>nclass.scottRob</span>)</div><div class='img'><img src='LOF-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='tukey_mc_up.html'>tukey_mc_up</a></span>(<span class='no'>llof_maha</span>)</div><div class='output co'>#&gt; [1] 0.7319992</div><div class='input'>
-<span class='no'>lof</span> <span class='kw'>&lt;-</span> <span class='fu'>LOF</span>(<span class='no'>svd</span>$<span class='no'>u</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-<span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span>(<span class='no'>lof</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='no'>nclass.scottRob</span>)</div><div class='img'><img src='LOF-3.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='fu'><a href='hist_out.html'>hist_out</a></span>(<span class='no'>lof</span>))</div><div class='output co'>#&gt; List of 2
-#&gt;  $ x  : num [1:513] 1.04 1.15 1.08 1 1.01 ...
-#&gt;  $ lim: num [1:2] -Inf 1.63</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='fu'><a href='hist_out.html'>hist_out</a></span>(<span class='no'>lof</span>, <span class='kw'>nboot</span> <span class='kw'>=</span> <span class='fl'>100</span>))</div><div class='output co'>#&gt; List of 3
-#&gt;  $ x      : num [1:513] 1.04 1.15 1.08 1 1.01 ...
-#&gt;  $ lim    : num [1:2] -Inf 1.63
-#&gt;  $ all_lim: num [1:2, 1:100] -Inf 1.63 -Inf 1.63 -Inf ...</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='fu'><a href='hist_out.html'>hist_out</a></span>(<span class='no'>lof</span>, <span class='kw'>nboot</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='st'>"FD"</span>))</div><div class='output co'>#&gt; List of 3
-#&gt;  $ x      : num [1:513] 1.04 1.15 1.08 1 1.01 ...
-#&gt;  $ lim    : num [1:2] -Inf 1.63
-#&gt;  $ all_lim: num [1:2, 1:100] -Inf 1.63 -Inf 1.63 -Inf ...</div><div class='input'>
+<span class='no'>test</span> <span class='kw'>&lt;-</span> <span class='fu'>prob_dist</span>(<span class='no'>U</span>)
+<span class='no'>plof</span> <span class='kw'>&lt;-</span> <span class='no'>test</span>$<span class='no'>dist.self</span> / <span class='no'>test</span>$<span class='no'>dist.nn</span>
+<span class='no'>plof_ish</span> <span class='kw'>&lt;-</span> <span class='no'>test</span>$<span class='no'>dist.self</span> / <span class='fu'><a href='https://rdrr.io/r/base/MathFun.html'>sqrt</a></span>(<span class='no'>test</span>$<span class='no'>dist.nn</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>U</span>[, <span class='fl'>1</span>:<span class='fl'>2</span>], <span class='kw'>col</span> <span class='kw'>=</span> (<span class='no'>plof_ish</span> <span class='kw'>&gt;</span> <span class='fu'><a href='tukey_mc_up.html'>tukey_mc_up</a></span>(<span class='no'>plof_ish</span>)) + <span class='fl'>1</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='img'><img src='prob_dist-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>U</span>[, <span class='fl'>3</span>:<span class='fl'>4</span>], <span class='kw'>col</span> <span class='kw'>=</span> (<span class='no'>plof_ish</span> <span class='kw'>&gt;</span> <span class='fu'><a href='tukey_mc_up.html'>tukey_mc_up</a></span>(<span class='no'>plof_ish</span>)) + <span class='fl'>1</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='img'><img src='prob_dist-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>U</span>[, <span class='fl'>5</span>:<span class='fl'>6</span>], <span class='kw'>col</span> <span class='kw'>=</span> (<span class='no'>plof_ish</span> <span class='kw'>&gt;</span> <span class='fu'><a href='tukey_mc_up.html'>tukey_mc_up</a></span>(<span class='no'>plof_ish</span>)) + <span class='fl'>1</span>, <span class='kw'>pch</span> <span class='kw'>=</span> <span class='fl'>20</span>)</div><div class='img'><img src='prob_dist-3.png' alt='' width='700' height='433' /></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

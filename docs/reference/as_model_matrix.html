@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Outlier detection threshold (upper) — tukey_mc_up • bigutilsr</title>
+<title>Transform a data frame — as_model_matrix • bigutilsr</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,8 @@
 
 
 
-<meta property="og:title" content="Outlier detection threshold (upper) — tukey_mc_up" />
-<meta property="og:description" content="Outlier detection threshold (upper) based on Tukey's rule, corrected for
-skewness using the 'medcouple', and possibly corrected for multiple testing." />
+<meta property="og:title" content="Transform a data frame — as_model_matrix" />
+<meta property="og:description" content="Transform a data frame into a matrix using one hot encoding." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -106,69 +105,49 @@ skewness using the 'medcouple', and possibly corrected for multiple testing." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Outlier detection threshold (upper)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/privefl/bigutilsr/blob/master/R/outlier-tukey.R'><code>R/outlier-tukey.R</code></a></small>
-    <div class="hidden name"><code>tukey_mc_up.Rd</code></div>
+    <h1>Transform a data frame</h1>
+    <small class="dont-index">Source: <a href='https://github.com/privefl/bigutilsr/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>as_model_matrix.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Outlier detection threshold (upper) based on Tukey's rule, corrected for
-skewness using the 'medcouple', and possibly corrected for multiple testing.</p>
+    <p>Transform a data frame into a matrix using one hot encoding.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tukey_mc_up</span>(<span class='no'>x</span>, <span class='kw'>coef</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>a</span> <span class='kw'>=</span> -<span class='fl'>4</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='fl'>3</span>)</pre>
+    <pre class="usage"><span class='fu'>as_model_matrix</span>(<span class='no'>df</span>, <span class='kw'>intercept</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>Numeric vector. Should be somewhat normally distributed.</p></td>
+      <th>df</th>
+      <td><p>A data frame.</p></td>
     </tr>
     <tr>
-      <th>coef</th>
-      <td><p>number determining how far 'whiskers' extend out from the box.
-If <code>NULL</code> (default), this is computed to get an type-I error of <code>alpha</code>,
-after adjusting for multiple testing. A standard value to use is <code>1.5</code>.</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>See <code>coef</code>. Default is <code>0.05</code>.</p></td>
-    </tr>
-    <tr>
-      <th>a</th>
-      <td><p>scaling factors multiplied by the medcouple
-    <code><a href='https://rdrr.io/pkg/robustbase/man/mc.html'>mc</a>()</code> to determine outlyer boundaries; see the references.</p></td>
-    </tr>
-    <tr>
-      <th>b</th>
-      <td><p>scaling factors multiplied by the medcouple
-    <code><a href='https://rdrr.io/pkg/robustbase/man/mc.html'>mc</a>()</code> to determine outlyer boundaries; see the references.</p></td>
+      <th>intercept</th>
+      <td><p>Whether to have a column with all <code>1</code>s. Default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><!-- %% Hubert, M. and Vandervieren, E. (2006) -->
-<!-- %% \emph{An Adjusted Boxplot for Skewed Distributions}, -->
-<!-- %% Technical Report TR-06-11, KU Leuven, Section of Statistics, Leuven. -->
-<!-- %% \url{http://wis.kuleuven.be/stat/robust/Papers/TR0611.pdf} --></p>
-<p>Hubert, M. and Vandervieren, E. (2008).
-  An adjusted boxplot for skewed distributions,
-  <em>Computational Statistics and Data Analysis</em> <b>52</b>, 5186--5201.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/robustbase/man/adjbox.html'>robustbase::adjbox()</a></code></p></div>
+    <p>A matrix.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span>(<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>3</span>, <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>6</span>), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1e4</span>, <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>0</span>)))</div><div class='input'>(<span class='no'>q</span> <span class='kw'>&lt;-</span> <span class='fu'>tukey_mc_up</span>(<span class='no'>x</span>))</div><div class='output co'>#&gt; [1] 4.200122</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span>(<span class='kw'>v</span> <span class='kw'>=</span> <span class='no'>q</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='img'><img src='tukey_mc_up-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='no'>x</span> <span class='kw'>&gt;</span> <span class='no'>q</span>)</div><div class='output co'>#&gt; [1] 1 2 3</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>mat</span> <span class='kw'>&lt;-</span> <span class='fu'>as_model_matrix</span>(<span class='no'>iris</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>mat</span>)</div><div class='output co'>#&gt;  num [1:150, 1:7] 5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 4.9 ...
+#&gt;  - attr(*, "dimnames")=List of 2
+#&gt;   ..$ : chr [1:150] "1" "2" "3" "4" ...
+#&gt;   ..$ : chr [1:7] "Sepal.Length" "Sepal.Width" "Petal.Length" "Petal.Width" ...
+#&gt;  - attr(*, "assign")= int [1:7] 1 2 3 4 5 5 5
+#&gt;  - attr(*, "contrasts")=List of 1
+#&gt;   ..$ Species: chr "contr.treatment"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#references">References</a></li>
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Outlier detection threshold (upper) — tukey_mc_up • bigutilsr</title>
+<title>Transform matrix — maha_trans • bigutilsr</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,8 @@
 
 
 
-<meta property="og:title" content="Outlier detection threshold (upper) — tukey_mc_up" />
-<meta property="og:description" content="Outlier detection threshold (upper) based on Tukey's rule, corrected for
-skewness using the 'medcouple', and possibly corrected for multiple testing." />
+<meta property="og:title" content="Transform matrix — maha_trans" />
+<meta property="og:description" content="Transform matrix to use Mahalanobis distance instead of Euclidean one." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -106,69 +105,51 @@ skewness using the 'medcouple', and possibly corrected for multiple testing." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Outlier detection threshold (upper)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/privefl/bigutilsr/blob/master/R/outlier-tukey.R'><code>R/outlier-tukey.R</code></a></small>
-    <div class="hidden name"><code>tukey_mc_up.Rd</code></div>
+    <h1>Transform matrix</h1>
+    <small class="dont-index">Source: <a href='https://github.com/privefl/bigutilsr/blob/master/R/outlier-dist.R'><code>R/outlier-dist.R</code></a></small>
+    <div class="hidden name"><code>maha_trans.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Outlier detection threshold (upper) based on Tukey's rule, corrected for
-skewness using the 'medcouple', and possibly corrected for multiple testing.</p>
+    <p>Transform matrix to use Mahalanobis distance instead of Euclidean one.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>tukey_mc_up</span>(<span class='no'>x</span>, <span class='kw'>coef</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>a</span> <span class='kw'>=</span> -<span class='fl'>4</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='fl'>3</span>)</pre>
+    <pre class="usage"><span class='fu'>maha_trans</span>(<span class='no'>U</span>, <span class='kw'>estim</span> <span class='kw'>=</span> <span class='fu'><a href='covrob_ogk.html'>covrob_ogk</a></span>(<span class='no'>U</span>))</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>Numeric vector. Should be somewhat normally distributed.</p></td>
+      <th>U</th>
+      <td><p>A matrix (e.g. PC scores).</p></td>
     </tr>
     <tr>
-      <th>coef</th>
-      <td><p>number determining how far 'whiskers' extend out from the box.
-If <code>NULL</code> (default), this is computed to get an type-I error of <code>alpha</code>,
-after adjusting for multiple testing. A standard value to use is <code>1.5</code>.</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>See <code>coef</code>. Default is <code>0.05</code>.</p></td>
-    </tr>
-    <tr>
-      <th>a</th>
-      <td><p>scaling factors multiplied by the medcouple
-    <code><a href='https://rdrr.io/pkg/robustbase/man/mc.html'>mc</a>()</code> to determine outlyer boundaries; see the references.</p></td>
-    </tr>
-    <tr>
-      <th>b</th>
-      <td><p>scaling factors multiplied by the medcouple
-    <code><a href='https://rdrr.io/pkg/robustbase/man/mc.html'>mc</a>()</code> to determine outlyer boundaries; see the references.</p></td>
+      <th>estim</th>
+      <td><p>List of location and scatter estimates, <code>$cov</code> and <code>$center</code>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><!-- %% Hubert, M. and Vandervieren, E. (2006) -->
-<!-- %% \emph{An Adjusted Boxplot for Skewed Distributions}, -->
-<!-- %% Technical Report TR-06-11, KU Leuven, Section of Statistics, Leuven. -->
-<!-- %% \url{http://wis.kuleuven.be/stat/robust/Papers/TR0611.pdf} --></p>
-<p>Hubert, M. and Vandervieren, E. (2008).
-  An adjusted boxplot for skewed distributions,
-  <em>Computational Statistics and Data Analysis</em> <b>52</b>, 5186--5201.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='https://rdrr.io/pkg/robustbase/man/adjbox.html'>robustbase::adjbox()</a></code></p></div>
+    <p><code>U</code>, transformed.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span>(<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>3</span>, <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>6</span>), <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>1e4</span>, <span class='kw'>m</span> <span class='kw'>=</span> <span class='fl'>0</span>)))</div><div class='input'>(<span class='no'>q</span> <span class='kw'>&lt;-</span> <span class='fu'>tukey_mc_up</span>(<span class='no'>x</span>))</div><div class='output co'>#&gt; [1] 4.200122</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/abline.html'>abline</a></span>(<span class='kw'>v</span> <span class='kw'>=</span> <span class='no'>q</span>, <span class='kw'>col</span> <span class='kw'>=</span> <span class='st'>"red"</span>)</div><div class='img'><img src='tukey_mc_up-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/which.html'>which</a></span>(<span class='no'>x</span> <span class='kw'>&gt;</span> <span class='no'>q</span>)</div><div class='output co'>#&gt; [1] 1 2 3</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"testdata"</span>, <span class='st'>"three-pops.rds"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"bigutilsr"</span>))
+<span class='no'>svd</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RSpectra/man/svds.html'>svds</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/scale.html'>scale</a></span>(<span class='no'>X</span>), <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>5</span>)
+
+<span class='no'>U</span> <span class='kw'>&lt;-</span> <span class='no'>svd</span>$<span class='no'>u</span>
+<span class='no'>dist1</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='covrob_ogk.html'>dist_ogk</a></span>(<span class='no'>U</span>)
+
+<span class='no'>U.maha</span> <span class='kw'>&lt;-</span> <span class='fu'>maha_trans</span>(<span class='no'>U</span>)
+<span class='no'>dist2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='no'>U.maha</span>^<span class='fl'>2</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/all.equal.html'>all.equal</a></span>(<span class='no'>dist2</span>, <span class='no'>dist1</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#references">References</a></li>
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#value">Value</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 

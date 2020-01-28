@@ -15,6 +15,7 @@ inline double square(double x) { return x * x; }
 
 /******************************************************************************/
 
+// [[Rcpp::export]]
 NumericVector scaleTau2_vector_rcpp(const NumericVector& x) {
 
   int n = x.size();
@@ -51,28 +52,25 @@ NumericVector scaleTau2_vector_rcpp(const NumericVector& x) {
 /******************************************************************************/
 
 // [[Rcpp::export]]
-List scaleTau2_matrix_rcpp(const NumericMatrix& x) {
+NumericVector dist_scaleTau2_matrix_rcpp(const NumericMatrix& Z) {
 
-  int p = x.ncol();
-  NumericVector mu_vec(p), sigma0_vec(p);
+  int n = Z.nrow();
+  int p = Z.ncol();
+  NumericVector d(n);
 
   for (int j = 0; j < p; j++) {
-    NumericVector col_j = x.column(j);
+
+    NumericVector col_j = Z.column(j);
     NumericVector mu_sigma0_j = scaleTau2_vector_rcpp(col_j);
-    mu_vec[j]     = mu_sigma0_j[0];
-    sigma0_vec[j] = mu_sigma0_j[1];
+    double mu_j     = mu_sigma0_j[0];
+    double sigma0_j = mu_sigma0_j[1];
+
+    for (int i = 0; i < n; i++) {
+      d[i] += square((Z(i, j) - mu_j) / sigma0_j);
+    }
   }
 
-  return List::create(_["mu"] = mu_vec, _["sigma0"] = sigma0_vec);
-}
-
-/******************************************************************************/
-
-// [[Rcpp::export]]
-double covGK_rcpp(const NumericVector& x, const NumericVector& y){
-  double sigma0_sum  = scaleTau2_vector_rcpp(x + y)[1];
-  double sigma0_diff = scaleTau2_vector_rcpp(x - y)[1];
-  return (square(sigma0_sum) - square(sigma0_diff)) / 4;
+  return d;
 }
 
 /******************************************************************************/

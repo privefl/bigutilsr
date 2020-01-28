@@ -52,6 +52,11 @@ covRob_ogk_r <- function(X, beta = 0.9) {
 
   list(cov = wcov, center = wcenter, dist = stats::mahalanobis(X, wcenter, wcov))
 }
-profvis::profvis({test2 <- covRob_ogk_r(mat2)})
+profvis::profvis({test2 <- covRob_ogk_r(mat2)})  # 2 sec / 1.3 GB
 
-# profvis::profvis({test <- covRob_rcpp(mat2)})
+# profvis::profvis({test <- covRob_rcpp(mat2)})  # 2.7 sec / 1.6 GB
+# profvis::profvis({true <- robust::covRob(mat2, estim = "pairwiseGK")})  # 33 sec / 0.4 GB
+# all.equal(true[c("cov", "center", "dist")], test[c("cov", "center", "dist")],
+#           check.attributes = FALSE)
+# all.equal(true[c("cov", "center", "dist")], test2[c("cov", "center", "dist")],
+#           check.attributes = FALSE)

@@ -3,7 +3,6 @@
 \docType{import}
 \name{reexports}
 \alias{reexports}
-\alias{covRob}
 \alias{svds}
 \title{Objects exported from other packages}
 \keyword{internal}
@@ -12,8 +11,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{robust}{\code{\link[robust]{covRob}}}
-
   \item{RSpectra}{\code{\link[RSpectra]{svds}}}
 }}
 

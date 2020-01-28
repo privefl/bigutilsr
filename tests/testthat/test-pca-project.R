@@ -19,7 +19,7 @@ proj <- pca_OADP_proj(X.new, loadings = svd$v[, 1:5], sval = svd$d)
 expect_equal(proj$simple_proj, U1[, 1:5])
 U3 <- proj$OADP_proj
 
-all_maha <- by(U0[, 2:3], pop[ind], function(x) covRob(x, estim = "pairwiseGK"))
+all_maha <- by(U0[, 2:3], pop[ind], function(x) covrob_ogk(as.matrix(x)))
 pred1 <- lapply(seq_along(all_maha), function(k) {
   maha <- all_maha[[k]]
   stats::mahalanobis(U1[pop[-ind] == k, 2:3], center = maha$center, cov = maha$cov)

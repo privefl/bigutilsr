@@ -5,6 +5,28 @@
 
 using namespace Rcpp;
 
+// scaleTau2_vector_rcpp
+NumericVector scaleTau2_vector_rcpp(const NumericVector& x);
+RcppExport SEXP _bigutilsr_scaleTau2_vector_rcpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(scaleTau2_vector_rcpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// dist_scaleTau2_matrix_rcpp
+NumericVector dist_scaleTau2_matrix_rcpp(const NumericMatrix& Z);
+RcppExport SEXP _bigutilsr_dist_scaleTau2_matrix_rcpp(SEXP ZSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericMatrix& >::type Z(ZSEXP);
+    rcpp_result_gen = Rcpp::wrap(dist_scaleTau2_matrix_rcpp(Z));
+    return rcpp_result_gen;
+END_RCPP
+}
 // roll_mean
 NumericVector roll_mean(const NumericVector& x, const NumericVector& w);
 RcppExport SEXP _bigutilsr_roll_mean(SEXP xSEXP, SEXP wSEXP) {
@@ -30,6 +52,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_bigutilsr_scaleTau2_vector_rcpp", (DL_FUNC) &_bigutilsr_scaleTau2_vector_rcpp, 1},
+    {"_bigutilsr_dist_scaleTau2_matrix_rcpp", (DL_FUNC) &_bigutilsr_dist_scaleTau2_matrix_rcpp, 1},
     {"_bigutilsr_roll_mean", (DL_FUNC) &_bigutilsr_roll_mean, 2},
     {"_bigutilsr_rowSumsSq", (DL_FUNC) &_bigutilsr_rowSumsSq, 1},
     {NULL, NULL, 0}

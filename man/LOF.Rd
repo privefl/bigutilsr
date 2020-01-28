@@ -56,5 +56,5 @@ Breunig, Markus M., et al. "LOF: identifying density-based local outliers."
 ACM sigmod record. Vol. 29. No. 2. ACM, 2000.
 }
 \seealso{
-\code{\link[=prob_dist]{prob_dist()}} \code{\link[=to_maha]{to_maha()}}
+\code{\link[=prob_dist]{prob_dist()}}
 }

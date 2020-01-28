@@ -1,7 +1,7 @@
 Package: bigutilsr
 Title: Utility Functions for Large-scale Data 
-Version: 0.2.3
-Date: 2020-01-27
+Version: 0.3.0
+Date: 2020-01-28
 Authors@R: 
   person("Florian", "Privé", 
          email = "florian.prive.21@gmail.com", 
@@ -25,10 +25,11 @@ Imports:
     nabor,
     Rcpp,
     robustbase,
-    robust,
     RSpectra,
     stats
 Suggests:
     covr,
+    mvtnorm,
+    rrcov,
     spelling,
     testthat (>= 2.1.0)

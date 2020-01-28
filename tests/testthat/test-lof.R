@@ -6,17 +6,17 @@ options(bigstatsr.check.parallel.blas = FALSE)
 
 ################################################################################
 
-test_that("to_maha() works", {
+test_that("maha_trans() works", {
 
   X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
   svd <- svds(scale(X), k = 5)
   U <- svd$u
-  maha <- covRob(U, estim = "pairwiseGK")
-  U.maha <- to_maha(U)
-  expect_equal(rowSums(U.maha^2), maha$dist)
+  U.maha <- maha_trans(U)
+  expect_equal(rowSums(U.maha^2), dist_ogk(U))
 
   mat <- matrix(rnorm(500), 100, 5)
-  mat.maha <- attr(U.maha, "trans")(mat)
+  maha <- covrob_ogk(U)
+  mat.maha <- maha_trans(mat, estim = maha)
   expect_equal(rowSums(mat.maha^2),
                stats::mahalanobis(mat, maha$center, maha$cov))
 })

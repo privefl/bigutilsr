@@ -5,6 +5,7 @@
 #' Transform matrix to use Mahalanobis distance instead of Euclidean one.
 #'
 #' @param U A matrix (e.g. PC scores).
+#' @param estim List of location and scatter estimates, `$cov` and `$center`.
 #'
 #' @return `U`, transformed.
 #' @export
@@ -14,26 +15,18 @@
 #' svd <- svds(scale(X), k = 5)
 #'
 #' U <- svd$u
-#' dist1 <- covRob(U, estim = "pairwiseGK")$dist
+#' dist1 <- dist_ogk(U)
 #'
-#' U.maha <- to_maha(U)
+#' U.maha <- maha_trans(U)
 #' dist2 <- rowSums(U.maha^2)
 #' all.equal(dist2, dist1)
 #'
-#' # to apply the same transformation to other data
-#' attr(U.maha, "trans")
-#'
-to_maha <- function(U) {
+maha_trans <- function(U, estim = covrob_ogk(U)) {
 
-  maha <- covRob(U, estim = "pairwiseGK", distance = FALSE, corr = FALSE)
-  eigs <- eigen(unname(maha$cov), symmetric = TRUE)
+  eigs <- eigen(unname(estim$cov), symmetric = TRUE)
   sqrt_inv_cov <- sweep(eigs$vectors, 2, sqrt(eigs$values), '/')
 
-  trans <- function(U_new) {
-    sweep(U_new, 2, maha$center, '-') %*% sqrt_inv_cov
-  }
-
-  structure(trans(U), trans = trans)
+  sweep(U, 2, estim$center, '-') %*% sqrt_inv_cov
 }
 
 ################################################################################
@@ -52,7 +45,7 @@ to_maha <- function(U) {
 #' @param log Whether to return the logarithm of LOFs? Default is `TRUE`.
 #' @param ncores Number of cores to use. Default is `1`.
 #'
-#' @seealso [prob_dist()] [to_maha()]
+#' @seealso [prob_dist()]
 #'
 #' @references
 #' Breunig, Markus M., et al. "LOF: identifying density-based local outliers."
@@ -81,7 +74,7 @@ to_maha <- function(U) {
 LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
                 robMaha = FALSE, log = TRUE, ncores = 1) {
 
-  if (robMaha) U <- to_maha(U)
+  if (robMaha) U <- maha_trans(U)
 
   knn <- knn_parallel(U, k = max(seq_k) + 1, ncores = ncores)
   ids <- knn$nn.idx[, -1, drop = FALSE]
@@ -113,7 +106,7 @@ LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
 #' @inheritParams LOF
 #' @param kNN Number of nearest neighbors to use. Default is `5`.
 #'
-#' @seealso [LOF()] [to_maha()]
+#' @seealso [LOF()]
 #'
 #' @references
 #' Kriegel, Hans-Peter, et al. "LoOP: local outlier probabilities." Proceedings
@@ -135,7 +128,7 @@ LOF <- function(U, seq_k = c(4, 10, 30), combine = max,
 #'
 prob_dist <- function(U, kNN = 5, robMaha = FALSE, ncores = 1) {
 
-  if (robMaha) U <- to_maha(U)
+  if (robMaha) U <- maha_trans(U)
 
   knn <- knn_parallel(U, k = kNN + 1, ncores = ncores)
   ids <- knn$nn.idx[, -1, drop = FALSE]

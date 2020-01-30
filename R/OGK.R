@@ -1,6 +1,7 @@
 ################################################################################
 
-get_sigma0 <- function(x) scaleTau2_vector_rcpp(x)[2]
+get_sigma0 <- function(x, tmp_dev, tmp_med)
+  scaleTau2_vector_rcpp(x, tmp_dev, tmp_med)[2]
 
 ogk_step_r <- function(X) {
 
@@ -8,14 +9,18 @@ ogk_step_r <- function(X) {
   S <- matrix(1, p, p)
   X.col.scaled <- vector("list", p)
 
+  tmp_col <- double(nrow(X))
+  tmp_dev <- double(nrow(X))
+  tmp_med <- double(nrow(X))
+
   for (j in seq_len(p)) {
     X_j <- X[, j]
-    sigma0_j <- get_sigma0(X_j)
+    sigma0_j <- get_sigma0(X_j, tmp_dev, tmp_med)
     col_j <- X.col.scaled[[j]] <- X_j / sigma0_j
     for (k in seq_len(j - 1)) {
       col_k <- X.col.scaled[[k]]
-      sigma0_sum  <- get_sigma0(col_j + col_k)
-      sigma0_diff <- get_sigma0(col_j - col_k)
+      sigma0_sum  <- get_sigma0(sum_in_temp(col_j, col_k, tmp_col), tmp_dev, tmp_med)
+      sigma0_diff <- get_sigma0(sub_in_temp(col_j, col_k, tmp_col), tmp_dev, tmp_med)
       S[j, k] <- S[k, j] <- (sigma0_sum ** 2 - sigma0_diff ** 2) / 4
     }
   }

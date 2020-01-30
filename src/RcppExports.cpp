@@ -5,14 +5,42 @@
 
 using namespace Rcpp;
 
-// scaleTau2_vector_rcpp
-NumericVector scaleTau2_vector_rcpp(const NumericVector& x);
-RcppExport SEXP _bigutilsr_scaleTau2_vector_rcpp(SEXP xSEXP) {
+// sum_in_temp
+NumericVector& sum_in_temp(const NumericVector& x, const NumericVector& y, NumericVector& tmp_vec);
+RcppExport SEXP _bigutilsr_sum_in_temp(SEXP xSEXP, SEXP ySEXP, SEXP tmp_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(scaleTau2_vector_rcpp(x));
+    Rcpp::traits::input_parameter< const NumericVector& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type tmp_vec(tmp_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(sum_in_temp(x, y, tmp_vec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// sub_in_temp
+NumericVector& sub_in_temp(const NumericVector& x, const NumericVector& y, NumericVector& tmp_vec);
+RcppExport SEXP _bigutilsr_sub_in_temp(SEXP xSEXP, SEXP ySEXP, SEXP tmp_vecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type tmp_vec(tmp_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(sub_in_temp(x, y, tmp_vec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// scaleTau2_vector_rcpp
+NumericVector scaleTau2_vector_rcpp(const NumericVector& x, NumericVector& tmp_dev, NumericVector& tmp_med);
+RcppExport SEXP _bigutilsr_scaleTau2_vector_rcpp(SEXP xSEXP, SEXP tmp_devSEXP, SEXP tmp_medSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type tmp_dev(tmp_devSEXP);
+    Rcpp::traits::input_parameter< NumericVector& >::type tmp_med(tmp_medSEXP);
+    rcpp_result_gen = Rcpp::wrap(scaleTau2_vector_rcpp(x, tmp_dev, tmp_med));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -52,7 +80,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_bigutilsr_scaleTau2_vector_rcpp", (DL_FUNC) &_bigutilsr_scaleTau2_vector_rcpp, 1},
+    {"_bigutilsr_sum_in_temp", (DL_FUNC) &_bigutilsr_sum_in_temp, 3},
+    {"_bigutilsr_sub_in_temp", (DL_FUNC) &_bigutilsr_sub_in_temp, 3},
+    {"_bigutilsr_scaleTau2_vector_rcpp", (DL_FUNC) &_bigutilsr_scaleTau2_vector_rcpp, 3},
     {"_bigutilsr_dist_scaleTau2_matrix_rcpp", (DL_FUNC) &_bigutilsr_dist_scaleTau2_matrix_rcpp, 1},
     {"_bigutilsr_roll_mean", (DL_FUNC) &_bigutilsr_roll_mean, 2},
     {"_bigutilsr_rowSumsSq", (DL_FUNC) &_bigutilsr_rowSumsSq, 1},

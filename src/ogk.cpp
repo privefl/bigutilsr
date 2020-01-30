@@ -11,7 +11,52 @@ inline double square(double x) { return x * x; }
 /******************************************************************************/
 
 // [[Rcpp::export]]
-NumericVector scaleTau2_vector_rcpp(const NumericVector& x) {
+NumericVector& sum_in_temp(const NumericVector& x,
+                           const NumericVector& y,
+                           NumericVector& tmp_vec) {
+  int n = x.size();
+  for (int i = 0; i < n; i++) tmp_vec[i] = x[i] + y[i];
+
+  return tmp_vec;
+}
+
+// [[Rcpp::export]]
+NumericVector& sub_in_temp(const NumericVector& x,
+                           const NumericVector& y,
+                           NumericVector& tmp_vec) {
+  int n = x.size();
+  for (int i = 0; i < n; i++) tmp_vec[i] = x[i] - y[i];
+
+  return tmp_vec;
+}
+
+/******************************************************************************/
+
+double median_cpp(const NumericVector& x,
+                  NumericVector& tmp_med) {
+
+  std::copy(x.begin(), x.end(), tmp_med.begin());
+
+  int n = tmp_med.size();
+  bool is_even = (n % 2) == 0;
+  int ind_mid = n / 2 - is_even;
+
+  double * mid_ptr = tmp_med.begin() + ind_mid;
+  std::nth_element(tmp_med.begin(), mid_ptr, tmp_med.end());
+  double mid_val1 = tmp_med[ind_mid];
+  if (!is_even) return mid_val1;
+
+  std::nth_element(mid_ptr, mid_ptr + 1, tmp_med.end());
+  double mid_val2 = mid_ptr[1];
+  return (mid_val1 + mid_val2) / 2;
+}
+
+/******************************************************************************/
+
+// [[Rcpp::export]]
+NumericVector scaleTau2_vector_rcpp(const NumericVector& x,
+                                    NumericVector& tmp_dev,
+                                    NumericVector& tmp_med) {
 
   double c1 = 4.5;
   double c2 = 3.0;
@@ -19,18 +64,17 @@ NumericVector scaleTau2_vector_rcpp(const NumericVector& x) {
   double c4 = square(c2);
 
   int n = x.size();
-  NumericVector x_dev(n);
-  double medx = Rcpp::median(x);
+  double medx = median_cpp(x, tmp_med);
   for (int i = 0; i < n; i++) {
-    x_dev[i] = std::abs(x[i] - medx);
+    tmp_dev[i] = std::abs(x[i] - medx);
   }
 
-  double sigma0 = Rcpp::median(x_dev);  // basically, MAD(x) (without constant)
+  double sigma0 = median_cpp(tmp_dev, tmp_med);
   double sigma0_c1 = sigma0 * c1;
   double mu = 0;
   double w_tot = 0;
   for (int i = 0; i < n; i++) {
-    double w_i = 1 - square(x_dev[i] / sigma0_c1);
+    double w_i = 1 - square(tmp_dev[i] / sigma0_c1);
     if (w_i > 0) {
       w_i *= w_i;
       mu += x[i] * w_i;
@@ -56,12 +100,12 @@ NumericVector dist_scaleTau2_matrix_rcpp(const NumericMatrix& Z) {
 
   int n = Z.nrow();
   int p = Z.ncol();
-  NumericVector d(n);
+  NumericVector d(n), tmp_dev(n), tmp_med(n);
 
   for (int j = 0; j < p; j++) {
 
     NumericVector col_j = Z.column(j);
-    NumericVector mu_sigma0_j = scaleTau2_vector_rcpp(col_j);
+    NumericVector mu_sigma0_j = scaleTau2_vector_rcpp(col_j, tmp_dev, tmp_med);
     double mu_j     = mu_sigma0_j[0];
     double sigma0_j = mu_sigma0_j[1];
 

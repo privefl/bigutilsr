@@ -9,7 +9,8 @@ rollmean(x, size)
 \arguments{
 \item{x}{Numeric vector.}
 
-\item{size}{Radius of the smoothing (smaller than half of the length of \code{x}).}
+\item{size}{Radius of the smoothing (smaller than half of the length of \code{x}).
+If using \code{size = 0}, it returns \code{x}.}
 }
 \value{
 Numeric vector of the same length as \code{x}, smoothed.

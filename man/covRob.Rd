@@ -15,5 +15,5 @@ covRob(data, ...)
 Deprecated
 }
 \seealso{
-\code{\link[bigutilsr:covrob_ogk]{bigutilsr::covrob_ogk()}} \code{\link[bigutilsr:dist_ogk]{bigutilsr::dist_ogk()}}
+\code{\link[=covrob_ogk]{covrob_ogk()}} \code{\link[=dist_ogk]{dist_ogk()}}
 }

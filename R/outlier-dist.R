@@ -143,3 +143,57 @@ prob_dist <- function(U, kNN = 5, robMaha = FALSE, ncores = 1) {
 }
 
 ################################################################################
+
+#' Geometric median
+#'
+#' Compute the geometric median, i.e. the point that minimizes the sum of all
+#' Euclidean distances to the observations (rows of `U`).
+#'
+#' @param U A matrix (e.g. PC scores).
+#' @param tol Convergence criterion. Default is `1e-10`.
+#' @param maxiter Maximum number of iterations. Default is `1000`.
+#' @param by_grp Possibly a vector for splitting rows of `U` into groups before
+#'   computing the geometric mean for each group. Default is `NULL` (ignored).
+#'
+#' @return The geometric median of all rows of `U`, a vector of the same size
+#'   as `ncol(U)`. If providing `by_grp`, then a matrix with rows being the
+#'   geometric median within each group.
+#' @export
+#'
+#' @examples
+#' X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
+#' pop <- rep(1:3, c(143, 167, 207))
+#'
+#' svd <- svds(scale(X), k = 5)
+#' U <- sweep(svd$u, 2, svd$d, '*')
+#' plot(U, col = pop, pch = 20)
+#'
+#' med_all <- geometric_median(U)
+#' points(t(med_all), pch = 20, col = "blue", cex = 4)
+#'
+#' med_pop <- geometric_median(U, by_grp = pop)
+#' points(med_pop, pch = 20, col = "blue", cex = 2)
+#'
+geometric_median <- function(U, tol = 1e-10, maxiter = 1000, by_grp = NULL) {
+
+  if (!is.null(by_grp))
+    return(do.call("rbind", by(U, by_grp, geometric_median)))
+
+  # Weiszfeld's algorithm
+  u.old <- colMeans(U)
+
+  for (k in seq_len(maxiter)) {
+    norm <- sqrt(rowSums(sweep(U, 2, u.old, '-')^2))
+    u.new <- colSums(sweep(U, 1, norm, '/')) / sum(1 / norm)
+    diff <- max(abs(u.new - u.old))
+    if (diff < tol) break
+    u.old <- u.new
+  }
+
+  if (k == maxiter)
+    warning("The maximum number of iterations has been reached.")
+
+  u.new
+}
+
+################################################################################

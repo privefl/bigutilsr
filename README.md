@@ -7,7 +7,7 @@
 
 R package with utility functions for large-scale data.
 
-For now, package {bigutilsr} mainly includes functions for outlier detection and PCA projection.
+For now, package {bigutilsr} mainly includes functions for outlier detection and unbiased PCA projection.
 
 See [this blog post on detecting outlier samples in PCA using functions from {bigutilsr}](https://privefl.github.io/blog/detecting-outlier-samples-in-pca/).
 

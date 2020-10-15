@@ -7,7 +7,7 @@
 \title{bigutilsr: Utility Functions for Large-scale Data}
 \description{
 Utility functions for large-scale data. For now, package 'bigutilsr'
-    mainly includes functions for outlier detection and PCA projection.
+    mainly includes functions for outlier detection and unbiased PCA projection.
 }
 \seealso{
 Useful links:

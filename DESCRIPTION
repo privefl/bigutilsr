@@ -7,7 +7,7 @@ Authors@R:
          email = "florian.prive.21@gmail.com", 
          role = c("aut", "cre"))
 Description: Utility functions for large-scale data. For now, package 'bigutilsr'
-    mainly includes functions for outlier detection and PCA projection.
+    mainly includes functions for outlier detection and unbiased PCA projection.
 License: GPL-3
 Encoding: UTF-8
 Language: en-US

@@ -1,7 +1,7 @@
 Package: bigutilsr
 Title: Utility Functions for Large-scale Data 
-Version: 0.3.3
-Date: 2020-09-25
+Version: 0.3.4
+Date: 2021-04-08
 Authors@R: 
   person("Florian", "Privé", 
          email = "florian.prive.21@gmail.com", 
@@ -11,7 +11,6 @@ Description: Utility functions for large-scale data. For now, package 'bigutilsr
 License: GPL-3
 Encoding: UTF-8
 Language: en-US
-LazyData: TRUE
 ByteCompile: TRUE
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

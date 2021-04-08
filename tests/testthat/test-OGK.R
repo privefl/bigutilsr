@@ -14,6 +14,7 @@ expect_type(covrob_ogk(mat2), "list")
 
 test_that("covrob_ogk() is the same as rrcov::CovOgk()", {
 
+  skip_on_cran()
   skip_if_not_installed("mvtnorm")
   skip_if_not_installed("rrcov")
 

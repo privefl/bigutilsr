@@ -15,10 +15,7 @@ after adjusting for multiple testing. A standard value to use is \code{1.5}.}
 
 \item{alpha}{See \code{coef}. Default is \code{0.05}.}
 
-\item{a}{scaling factors multiplied by the medcouple
-    \code{\link[robustbase]{mc}()} to determine outlyer boundaries; see the references.}
-
-\item{b}{scaling factors multiplied by the medcouple
+\item{a, b}{scaling factors multiplied by the medcouple
     \code{\link[robustbase]{mc}()} to determine outlyer boundaries; see the references.}
 }
 \description{
@@ -40,6 +37,7 @@ which(x > q)
   Hubert, M. and Vandervieren, E. (2008).
   An adjusted boxplot for skewed distributions,
   \emph{Computational Statistics and Data Analysis} \bold{52}, 5186--5201.
+  \ifelse{text}{doi:10.1016/j.csda.2007.11.008 <https://doi.org/10.1016/j.csda.2007.11.008>}{\ifelse{latex}{\href{https://doi.org/10.1016/j.csda.2007.11.008}{doi:10.1016\out{\\slash{}}j.csda.2007.11.008}}{\href{https://doi.org/10.1016/j.csda.2007.11.008}{doi:10.1016/j.csda.2007.11.008}}}
 }
 \seealso{
 \code{\link[robustbase:adjbox]{robustbase::adjbox()}}

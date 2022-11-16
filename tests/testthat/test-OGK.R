@@ -12,6 +12,22 @@ expect_error(covrob_ogk(mat), "You can't have missing values in 'U'.")
 mat2 <- as.matrix(iris[1:4])
 expect_type(covrob_ogk(mat2), "list")
 
+################################################################################
+
+test_that("covrob_ogk() is the same as robustbase::covOGK()", {
+
+  skip_on_cran()
+
+  hbk.x <- data.matrix(robustbase::hbk[, 1:3])
+  cO1 <- robustbase::covOGK(hbk.x, sigmamu = robustbase::scaleTau2)
+
+  params <- covrob_ogk(hbk.x)
+  expect_equal(params$center, cO1$wcenter)
+  expect_equal(params$cov, cO1$wcov)
+})
+
+################################################################################
+
 test_that("covrob_ogk() is the same as rrcov::CovOgk()", {
 
   skip_on_cran()

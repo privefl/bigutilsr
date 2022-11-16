@@ -1,7 +1,8 @@
-[![Travis build status](https://travis-ci.org/privefl/bigutilsr.svg?branch=master)](https://travis-ci.org/privefl/bigutilsr)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/privefl/bigutilsr?branch=master&svg=true)](https://ci.appveyor.com/project/privefl/bigutilsr)
-[![Coverage status](https://codecov.io/gh/privefl/bigutilsr/branch/master/graph/badge.svg)](https://codecov.io/github/privefl/bigutilsr?branch=master)
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/privefl/bigutilsr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/privefl/bigutilsr/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/privefl/bigutilsr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/privefl/bigutilsr?branch=master)
 [![CRAN status](https://www.r-pkg.org/badges/version/bigutilsr)](https://cran.r-project.org/package=bigutilsr)
+<!-- badges: end -->
 
 # bigutilsr
 
@@ -14,5 +15,9 @@ See [this blog post on detecting outlier samples in PCA using functions from {bi
 ## Installation
 
 ```r
+# from CRAN
+install.packages("bigutilsr")
+
+# latest version from GitHub
 remotes::install_github("privefl/bigutilsr")
 ```

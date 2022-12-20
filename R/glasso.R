@@ -36,7 +36,7 @@ regul_glasso <- function(mat,
       silent = TRUE)
 
     if (inherits(new_mat, "try-error")) {
-      bigassertr::warning2("Divergence! Increasing lambda and retrying..")
+      message("Divergence! Increasing lambda (x1.5) and retrying..")
       lambda <- lambda * 1.5
     } else break
   }

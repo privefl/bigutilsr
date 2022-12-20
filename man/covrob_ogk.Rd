@@ -66,9 +66,10 @@ Maronna, R.A. and Zamar, R.H. (2002)
   Robust estimates, residuals, and outlier detection with multiresponse data.
   \emph{Biometrics} \bold{28}, 81--124.
 
-  Todorov V & Filzmoser P (2009), An Object Oriented Framework for Robust Multivariate Analysis. 
+  Todorov V & Filzmoser P (2009),
+  An Object Oriented Framework for Robust Multivariate Analysis.
   \emph{Journal of Statistical Software}, \bold{32}(3), 1--47.
-  \ifelse{text}{doi:10.18637/jss.v032.i03 <https://doi.org/10.18637/jss.v032.i03>}{\ifelse{latex}{\href{https://doi.org/10.18637/jss.v032.i03}{doi:10.18637\out{\\slash{}}jss.v032.i03}}{\href{https://doi.org/10.18637/jss.v032.i03}{doi:10.18637/jss.v032.i03}}}.
+  URL \url{http://www.jstatsoft.org/v32/i03/}.
 }
 \seealso{
 \code{\link[rrcov:CovOgk]{rrcov::CovOgk()}}

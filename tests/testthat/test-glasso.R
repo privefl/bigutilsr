@@ -19,6 +19,9 @@ test_that("regul_glasso() works", {
   cov_regul3 <- regul_glasso(cov / 10, lambda / 10, tol = 1e-5)
   expect_equal(cov_regul3, structure(cov_regul / 10, lambda = lambda / 10),
                tolerance = 1e-4)
+
+  expect_error(regul_glasso(as.data.frame(cov), lambda),
+               "Not compatible with requested type")
 })
 
 ################################################################################

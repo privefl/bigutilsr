@@ -1,6 +1,6 @@
 Package: bigutilsr
 Title: Utility Functions for Large-scale Data 
-Version: 0.3.6
+Version: 0.3.7
 Date: 2022-12-20
 Authors@R: 
   person("Florian", "Privé", 

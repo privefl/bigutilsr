@@ -1,7 +1,7 @@
 Package: bigutilsr
 Title: Utility Functions for Large-scale Data 
-Version: 0.3.7
-Date: 2022-12-20
+Version: 0.3.8
+Date: 2023-12-04
 Authors@R: 
   person("Florian", "Privé", 
          email = "florian.prive.21@gmail.com", 
@@ -18,7 +18,8 @@ URL: https://github.com/privefl/bigutilsr
 BugReports: https://github.com/privefl/bigutilsr/issues
 LinkingTo: 
     Rcpp,
-    RcppArmadillo
+    RcppArmadillo,
+    RcppEigen
 Imports: 
     bigassertr (>= 0.1.1),
     bigparallelr (>= 0.2.3),

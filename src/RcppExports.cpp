@@ -2,6 +2,7 @@
 // Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #include <RcppArmadillo.h>
+#include <RcppEigen.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -24,6 +25,19 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     rcpp_result_gen = Rcpp::wrap(glasso(mat, lambda, maxiter_outer, maxiter_lasso, tol, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// solve_linear_system
+Eigen::VectorXd solve_linear_system(Eigen::MatrixXd& A, const Eigen::VectorXd& b, double add_to_diag);
+RcppExport SEXP _bigutilsr_solve_linear_system(SEXP ASEXP, SEXP bSEXP, SEXP add_to_diagSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Eigen::MatrixXd& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< const Eigen::VectorXd& >::type b(bSEXP);
+    Rcpp::traits::input_parameter< double >::type add_to_diag(add_to_diagSEXP);
+    rcpp_result_gen = Rcpp::wrap(solve_linear_system(A, b, add_to_diag));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -103,6 +117,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_bigutilsr_glasso", (DL_FUNC) &_bigutilsr_glasso, 6},
+    {"_bigutilsr_solve_linear_system", (DL_FUNC) &_bigutilsr_solve_linear_system, 3},
     {"_bigutilsr_sum_in_temp", (DL_FUNC) &_bigutilsr_sum_in_temp, 3},
     {"_bigutilsr_sub_in_temp", (DL_FUNC) &_bigutilsr_sub_in_temp, 3},
     {"_bigutilsr_scaleTau2_vector_rcpp", (DL_FUNC) &_bigutilsr_scaleTau2_vector_rcpp, 3},

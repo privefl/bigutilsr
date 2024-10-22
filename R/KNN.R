@@ -12,6 +12,8 @@
 knn_parallel <- function(data, query = data, k, ...,
                          ncores = bigparallelr::nb_cores()) {
 
+  if (ncores == 1) return(nabor::knn(data, query, k = k, ...))
+
   all_knn <- bigparallelr::split_parapply(function(ind, data, query, k, ...) {
     nabor::knn(data, query[ind, , drop = FALSE], k = k, ...)
   }, ind = bigparallelr::rows_along(query), ncores = ncores,

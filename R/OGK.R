@@ -35,7 +35,7 @@ ogk_step_r <- function(X) {
 
 ################################################################################
 
-#' @inherit rrcov::CovOgk title description details references
+#' @inherit rrcov::CovOgk title description references
 #'
 #' @param U A matrix with no missing values and at least 2 columns.
 #' @param niter Number of number of iterations for the first step of the algorithm,

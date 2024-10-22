@@ -29,22 +29,6 @@ Computes a robust multivariate location and scatter estimate with a high
      Zamar (2002) which in turn is based on the pairwise robust estimator
      proposed by Gnanadesikan-Kettenring (1972).
 }
-\details{
-The method proposed by Marona and Zamar (2002) allowes to obtain
-    positive-definite and almost affine equivariant robust scatter matrices
-    starting from any pairwise robust scatter matrix. The default robust estimate
-    of covariance between two random vectors used is the one proposed by
-    Gnanadesikan and Kettenring (1972) but the user can choose any other method by
-    redefining the function in slot \code{vrob} of the control object
-    \code{CovControlOgk}. Similarly, the function for computing the robust
-    univariate location and dispersion used is the \code{tau scale} defined
-    in Yohai and Zamar (1998) but it can be redefined in the control object.
-
-    The estimates obtained by the OGK method, similarly as in \code{CovMcd} are returned
-    as 'raw' estimates. To improve the estimates a reweighting step is performed using
-    the coverage parameter \code{beta} and these reweighted estimates are returned as
-    'final' estimates.
-}
 \examples{
 X <- readRDS(system.file("testdata", "three-pops.rds", package = "bigutilsr"))
 svd <- svds(scale(X), k = 5)
